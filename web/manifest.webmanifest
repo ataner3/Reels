@@ -1,0 +1,17 @@
+{
+  "name": "Fabulous",
+  "short_name": "Fabulous",
+  "description": "Rituale, Gewohnheiten und Ziele – kostenlos.",
+  "lang": "de",
+  "start_url": "./#heute",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F1F2F7",
+  "theme_color": "#EE5A36",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

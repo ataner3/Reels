@@ -1,6 +1,37 @@
 # Fabulous – Ziele & Gewohnheiten tracken
 
-Eine native iOS-App (SwiftUI + SwiftData), mit der du dir Ziele setzt und täglich bzw. wöchentlich trackst.
+Fabulous gibt es in zwei Varianten:
+
+1. **Web-App** (`web/`): läuft im Browser auf iPhone, iPad und überall sonst. Kein Mac nötig.
+2. **Native iOS-App** (`Fabulous/`, SwiftUI): braucht einen Mac mit Xcode zum Installieren.
+
+## Web-App (empfohlen)
+
+**Direkt nutzen:** Die App ist als claude.ai-Artifact veröffentlicht. Link in Safari öffnen, mit dem
+claude.ai-Konto anmelden, über *Teilen → Zum Home-Bildschirm* ablegen. Die Daten werden über das
+claude.ai-Konto zwischen iPhone und iPad synchronisiert.
+
+**Selbst hosten (optional):** `web/index.html` ist eine eigenständige Web-App mit App-Icon und Offline-Modus.
+Daten liegen dann nur im Browser des Geräts (Backup über *Ich → Backup sichern*).
+Für GitHub Pages: im Repo unter *Settings → Pages* als Quelle „GitHub Actions“ wählen; der Workflow
+`.github/workflows/pages.yml` veröffentlicht `web/` bei jedem Push auf `main`.
+
+Aufbau:
+
+```
+web/
+├── src/content.js     Reisen, Vorlagen, Farben, Sprüche
+├── src/app.js         App-Logik, Ansichten, Sync, Ritual-Modus
+├── src/style.css      Design (hell & dunkel)
+├── build.py           baut app.html (Artifact) und index.html (eigenständig)
+├── manifest.webmanifest, sw.js, icons/   für „Zum Home-Bildschirm“ & offline
+```
+
+Nach Änderungen in `web/src/` einmal `python3 web/build.py` ausführen.
+
+---
+
+# Native iOS-App (SwiftUI)
 
 ## Funktionen
 
