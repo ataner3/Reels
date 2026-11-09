@@ -57,4 +57,15 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {{
 </html>
 """
 (ROOT / "index.html").write_text(standalone)
+
+# Fertige Website für GitHub Pages (Ordner /docs im Repo)
+import shutil
+DOCS = ROOT.parent / "docs"
+(DOCS / "icons").mkdir(parents=True, exist_ok=True)
+(DOCS / "index.html").write_text(standalone)
+for name in ("manifest.webmanifest", "sw.js"):
+    shutil.copy(ROOT / name, DOCS / name)
+for icon in (ROOT / "icons").glob("*.png"):
+    shutil.copy(icon, DOCS / "icons" / icon.name)
+(DOCS / ".nojekyll").write_text("")
 print("app.html", len(body), "bytes; index.html", len(standalone), "bytes")

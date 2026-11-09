@@ -1017,7 +1017,7 @@ const SHEETS = {
     body: `<div class="card"><h3>iPhone & iPad (Safari)</h3><ol style="margin:0;padding-left:20px;line-height:1.7">
         <li>Öffne Fabulous in <b>Safari</b>.</li><li>Tippe auf das <b>Teilen</b>-Symbol (Quadrat mit Pfeil nach oben).</li>
         <li>Wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</li></ol></div>
-      <p class="hint">Danach startest du Fabulous mit einem Tipp vom Home-Bildschirm. Bist du in Safari mit deinem claude.ai-Konto angemeldet, sind deine Daten auf iPhone und iPad dieselben.</p>`,
+      <p class="hint">Danach startest du Fabulous mit einem Tipp vom Home-Bildschirm wie eine normale App. Deine Daten bleiben auf dem jeweiligen Gerät. Mit „Backup sichern“ und „Backup laden“ überträgst du sie auf ein anderes Gerät.</p>`,
   }),
 };
 
@@ -1365,11 +1365,23 @@ const A = {
   'install-help': () => openSheet({ kind: 'install' }),
   export: async () => {
     const text = JSON.stringify({ app: 'fabulous', version: 1, exportedAt: new Date().toISOString(), S, M });
+    const filename = `fabulous-backup-${dayKey(new Date())}.json`;
     let saved = false;
     try {
       const dl = window.claude?.use ? await window.claude.use('downloads') : null;
-      if (dl) { await dl.save({ filename: `fabulous-backup-${dayKey(new Date())}.json`, data: text }); saved = true; toast('Backup gespeichert'); }
+      if (dl) { await dl.save({ filename, data: text }); saved = true; toast('Backup gespeichert'); }
     } catch (e) { saved = false; }
+    if (!saved && !window.claude) {
+      // Eigenständige Version: Datei teilen (iPhone/iPad) oder herunterladen
+      try {
+        const file = new File([text], filename, { type: 'application/json' });
+        if (navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], title: 'Fabulous-Backup' }); saved = true; }
+        else {
+          const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = filename;
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); saved = true; toast('Backup heruntergeladen');
+        }
+      } catch (e) { if (e && e.name === 'AbortError') saved = true; }
+    }
     if (!saved) openSheet({ kind: 'export', text });
   },
   'copy-export': async () => {

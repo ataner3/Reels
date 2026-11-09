@@ -7,14 +7,14 @@ Fabulous gibt es in zwei Varianten:
 
 ## Web-App (empfohlen)
 
-**Direkt nutzen:** Die App ist als claude.ai-Artifact veröffentlicht. Link in Safari öffnen, mit dem
-claude.ai-Konto anmelden, über *Teilen → Zum Home-Bildschirm* ablegen. Die Daten werden über das
-claude.ai-Konto zwischen iPhone und iPad synchronisiert.
+**Eigene Adresse (empfohlen):** Der Ordner `docs/` enthält die fertige Web-App. Einmalig einschalten:
+GitHub → Repo → *Settings → Pages* → *Source: Deploy from a branch* → Branch `claude/fervent-clarke-50ukj0`,
+Ordner `/docs` → *Save*. Danach läuft die App unter **https://ataner3.github.io/Reels/**. In Safari öffnen und über
+*Teilen → Zum Home-Bildschirm* ablegen. Die Daten liegen auf dem jeweiligen Gerät. Mit *Ich → Backup sichern / laden*
+überträgst du sie auf ein anderes Gerät.
 
-**Selbst hosten (optional):** `web/index.html` ist eine eigenständige Web-App mit App-Icon und Offline-Modus.
-Daten liegen dann nur im Browser des Geräts (Backup über *Ich → Backup sichern*).
-Für GitHub Pages: im Repo unter *Settings → Pages* als Quelle „GitHub Actions“ wählen; der Workflow
-`.github/workflows/pages.yml` veröffentlicht `web/` bei jedem Push auf `main`.
+**Über claude.ai:** Die App ist zusätzlich als claude.ai-Artifact veröffentlicht. Dort werden die Daten über das
+claude.ai-Konto synchronisiert. claude.ai legt aber seine Kommentar-Funktion über die Seite.
 
 Aufbau:
 
@@ -23,7 +23,7 @@ web/
 ├── src/content.js     Reisen, Vorlagen, Farben, Sprüche
 ├── src/app.js         App-Logik, Ansichten, Sync, Ritual-Modus
 ├── src/style.css      Design (hell & dunkel)
-├── build.py           baut app.html (Artifact) und index.html (eigenständig)
+├── build.py           baut app.html (Artifact), index.html und docs/ (eigenständig)
 ├── manifest.webmanifest, sw.js, icons/   für „Zum Home-Bildschirm“ & offline
 ```
 
