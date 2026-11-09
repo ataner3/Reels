@@ -4,19 +4,19 @@ Eine native iOS-App (SwiftUI + SwiftData), mit der du dir Ziele setzt und tägli
 
 ## Funktionen
 
-- **Heute** – alle aktiven Ziele auf einen Blick, mit Tagesfortschritt und Motivationsspruch
-  - Ein Tipp auf den runden Button hakt ein Ziel ab oder zählt hoch (z. B. +1 Glas Wasser)
-  - Gedrückt halten: eigene Menge eingeben, Notiz hinzufügen oder den letzten Eintrag rückgängig machen
-  - Über die Wochenleiste kannst du vergangene Tage nachtragen
-- **Zwei Arten von Zielen**
-  - *Abhaken*: täglich (z. B. Meditieren) oder X-mal pro Woche (z. B. 3× Sport)
-  - *Zählen*: Mengen mit Einheit (Gläser, Seiten, Schritte, €), täglich oder wöchentlich
-- **Serien** 🔥 – aktuelle und beste Serie pro Ziel
-- **Detailansicht** – Balkendiagramm, Kalender-Heatmap (16 Wochen), Erfolgsquote, Einträge mit Notizen
-- **Statistik** – Erfolgsquote über 7/30 Tage, Tagesübersicht, alle Ziele im Vergleich
-- **Erinnerungen** – tägliche Push-Benachrichtigung zur gewünschten Uhrzeit
-- **Vorlagen** – Wasser trinken, Meditieren, Lesen, Sport, Schritte, Sparen …
-- Ziele sortieren, archivieren, löschen; Dark Mode wird unterstützt
+Aufgebaut nach dem Prinzip „kleine Gewohnheiten, feste Rituale, geführte Reisen“ – komplett kostenlos, ohne Abo, ohne Konto.
+
+- **Einführung** beim ersten Start: Name, erste Reise auswählen, Aufstehzeit
+- **Heute** – Begrüßung, Wochenleiste, Tagesfortschritt, aktuelle Reise und deine Rituale
+  - **Rituale** (Morgen / Nachmittag / Abend) bestehen aus mehreren Gewohnheiten, die du direkt abhakst
+  - **Ritual starten** ▶ – geführter Vollbild-Modus: eine Gewohnheit nach der anderen, mit Countdown-Timer, Tipp und Abschluss-Feier 🎉
+  - Eigenständige **Ziele & Tracker** zum Zählen (Wasser, Seiten, Schritte, € …), auch wöchentlich
+- **Reisen** – Programme mit Schritten: Briefe, einmalige Aufgaben und neue Gewohnheiten, die automatisch
+  deinem Ritual hinzugefügt werden. Ein Schritt ist geschafft, wenn du die Gewohnheit an X Tagen erledigt hast.
+  - ⚡️ Energie für jeden Tag · 🌙 Besser schlafen · 🎯 Fokus & Klarheit · 🧘 Ruhe & Achtsamkeit
+- **Fortschritt** – Erfolgsquote (7/30 Tage), Diagramme, Serien 🔥, Kalender-Heatmap pro Gewohnheit
+- **Ich** – Profil, Erfolge, Rituale & Gewohnheiten verwalten, alle Daten löschen
+- **Erinnerungen** pro Ritual (und optional pro Gewohnheit)
 - Alle Daten bleiben lokal auf dem Gerät (SwiftData)
 
 ## Voraussetzungen
@@ -37,17 +37,24 @@ Bundle Identifier (`com.example.fabulous`) auf etwas Eigenes ändern.
 
 ```
 Fabulous/
-├── App/FabulousApp.swift          App-Einstieg + Tab-Leiste
+├── App/FabulousApp.swift          App-Einstieg, Einführung oder Tab-Leiste
 ├── Models/
-│   ├── Goal.swift                 Ziel-Modell, Fortschritt, Serien, Aktionen
+│   ├── Goal.swift                 Gewohnheit/Ziel, Fortschritt, Serien, Aktionen
 │   ├── Entry.swift                Einzelner Tracking-Eintrag
+│   ├── Ritual.swift               Rituale (Morgen/Nachmittag/Abend)
+│   ├── Journey.swift              Reisen: Inhalte, Fortschritt, Logik
 │   └── GoalTemplate.swift         Vorlagen
 ├── Views/
-│   ├── TodayView.swift            Heute-Ansicht, Wochenleiste, Ziel-Karten
-│   ├── GoalsListView.swift        Liste aller Ziele
-│   ├── GoalEditorView.swift       Ziel anlegen/bearbeiten
+│   ├── OnboardingView.swift       Einführung beim ersten Start
+│   ├── TodayView.swift            Heute-Ansicht, Wochenleiste, Karten
+│   ├── RitualViews.swift          Ritual-Karte, Details, Editor, Liste
+│   ├── RitualPlayerView.swift     Geführter Ritual-Modus mit Timer
+│   ├── JourneyViews.swift         Reisen-Tab und Reise-Details
+│   ├── GoalsListView.swift        Liste aller Gewohnheiten & Ziele
+│   ├── GoalEditorView.swift       Gewohnheit/Ziel anlegen/bearbeiten
 │   ├── GoalDetailView.swift       Details, Diagramm, Heatmap, Einträge
-│   ├── StatsView.swift            Statistik
+│   ├── StatsView.swift            Fortschritt
+│   ├── ProfileView.swift          Ich / Einstellungen
 │   └── Components.swift           Fortschrittsring, Kacheln, Karten
 └── Utilities/
     ├── Helpers.swift              Farben, Kalender, Formatierung

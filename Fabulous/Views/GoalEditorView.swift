@@ -5,6 +5,7 @@ struct GoalEditorView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Goal.sortIndex) private var allGoals: [Goal]
+    @Query private var rituals: [Ritual]
 
     let goal: Goal?
 
@@ -19,9 +20,13 @@ struct GoalEditorView: View {
     @State private var reminderEnabled: Bool
     @State private var reminderTime: Date
     @State private var notes: String
+    @State private var selectedRitual: Ritual?
+    @State private var durationMinutes: Int
 
-    init(goal: Goal? = nil) {
+    init(goal: Goal? = nil, ritual: Ritual? = nil) {
         self.goal = goal
+        _selectedRitual = State(initialValue: goal?.ritual ?? ritual)
+        _durationMinutes = State(initialValue: goal?.durationMinutes ?? 2)
         _title = State(initialValue: goal?.title ?? "")
         _emoji = State(initialValue: goal?.emoji ?? "⭐️")
         _colorHex = State(initialValue: goal?.colorHex ?? Palette.colors[0])
@@ -150,19 +155,36 @@ struct GoalEditorView: View {
                          : "Zähle Mengen wie Gläser, Seiten, Minuten oder Euro.")
                 }
 
+                Section {
+                    Picker("Ritual", selection: $selectedRitual) {
+                        Text("Keins (eigenständig)").tag(Ritual?.none)
+                        ForEach(rituals.sorted { $0.minutesOfDay < $1.minutesOfDay }) { ritual in
+                            Text("\(ritual.emoji) \(ritual.name)").tag(Ritual?.some(ritual))
+                        }
+                    }
+                    if selectedRitual != nil {
+                        Stepper(durationMinutes == 0 ? "Dauer: ohne Timer" : "Dauer: \(durationMinutes) Min.",
+                                value: $durationMinutes, in: 0...120)
+                    }
+                } header: {
+                    Text("Ritual")
+                } footer: {
+                    Text("Gewohnheiten in einem Ritual erscheinen im geführten Ritual-Modus – mit Timer, wenn du eine Dauer angibst.")
+                }
+
                 Section("Erinnerung") {
-                    Toggle("Tägliche Erinnerung", isOn: $reminderEnabled.animation())
+                    Toggle("Eigene tägliche Erinnerung", isOn: $reminderEnabled.animation())
                     if reminderEnabled {
                         DatePicker("Uhrzeit", selection: $reminderTime, displayedComponents: .hourAndMinute)
                     }
                 }
 
-                Section("Warum ist mir das wichtig?") {
-                    TextField("Deine Motivation …", text: $notes, axis: .vertical)
+                Section("Tipp / Motivation") {
+                    TextField("z. B. Warum ist dir das wichtig?", text: $notes, axis: .vertical)
                         .lineLimit(2...6)
                 }
             }
-            .navigationTitle(goal == nil ? "Neues Ziel" : "Ziel bearbeiten")
+            .navigationTitle(goal == nil ? (selectedRitual == nil ? "Neues Ziel" : "Neue Gewohnheit") : "Bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: kind) { normalizeTarget() }
             .onChange(of: frequency) { normalizeTarget() }
@@ -222,6 +244,17 @@ struct GoalEditorView: View {
         model.reminderEnabled = reminderEnabled
         model.reminderTime = reminderTime
         model.notes = notes
+        model.durationMinutes = selectedRitual == nil ? 0 : durationMinutes
+        if model.ritual?.persistentModelID != selectedRitual?.persistentModelID {
+            let oldRitual = model.ritual
+            if let selectedRitual {
+                selectedRitual.add(model)
+                ReminderScheduler.update(for: selectedRitual)
+            } else {
+                model.ritual = nil
+            }
+            if let oldRitual { ReminderScheduler.update(for: oldRitual) }
+        }
 
         ReminderScheduler.update(for: model)
         dismiss()

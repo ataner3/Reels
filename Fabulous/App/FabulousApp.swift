@@ -5,9 +5,21 @@ import SwiftData
 struct FabulousApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
-        .modelContainer(for: [Goal.self, Entry.self])
+        .modelContainer(for: [Goal.self, Entry.self, Ritual.self, JourneyProgress.self])
+    }
+}
+
+struct RootView: View {
+    @AppStorage("onboardingDone") private var onboardingDone = false
+
+    var body: some View {
+        if onboardingDone {
+            ContentView()
+        } else {
+            OnboardingView()
+        }
     }
 }
 
@@ -16,10 +28,12 @@ struct ContentView: View {
         TabView {
             TodayView()
                 .tabItem { Label("Heute", systemImage: "sun.max.fill") }
-            GoalsListView()
-                .tabItem { Label("Ziele", systemImage: "target") }
+            JourneysView()
+                .tabItem { Label("Reisen", systemImage: "map.fill") }
             StatsView()
-                .tabItem { Label("Statistik", systemImage: "chart.bar.fill") }
+                .tabItem { Label("Fortschritt", systemImage: "chart.bar.fill") }
+            ProfileView()
+                .tabItem { Label("Ich", systemImage: "person.crop.circle.fill") }
         }
     }
 }

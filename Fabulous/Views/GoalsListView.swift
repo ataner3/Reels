@@ -10,8 +10,7 @@ struct GoalsListView: View {
     private var archived: [Goal] { allGoals.filter { $0.isArchived } }
 
     var body: some View {
-        NavigationStack {
-            List {
+        List {
                 if allGoals.isEmpty {
                     ContentUnavailableView("Keine Ziele", systemImage: "target",
                                            description: Text("Tippe auf +, um ein Ziel anzulegen."))
@@ -41,16 +40,14 @@ struct GoalsListView: View {
                     }
                 }
             }
-            .navigationTitle("Meine Ziele")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) { EditButton() }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showEditor = true } label: { Image(systemName: "plus") }
-                }
+        .navigationTitle("Gewohnheiten & Ziele")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showEditor = true } label: { Image(systemName: "plus") }
             }
-            .navigationDestination(for: Goal.self) { GoalDetailView(goal: $0) }
-            .sheet(isPresented: $showEditor) { GoalEditorView() }
         }
+        .sheet(isPresented: $showEditor) { GoalEditorView() }
     }
 
     private func move(from source: IndexSet, to destination: Int) {
@@ -77,7 +74,8 @@ struct GoalListRow: View {
             EmojiBadge(goal: goal, size: 40)
             VStack(alignment: .leading, spacing: 2) {
                 Text(goal.title).font(.body.weight(.semibold))
-                Text(goal.summary).font(.caption).foregroundStyle(.secondary)
+                Text(goal.ritual.map { "\($0.emoji) \($0.name)" } ?? goal.summary)
+                    .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
             if goal.reminderEnabled {

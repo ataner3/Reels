@@ -2,12 +2,24 @@ import SwiftUI
 import SwiftData
 
 struct TodayView: View {
+    @AppStorage("userName") private var userName = ""
     @Query(sort: \Goal.sortIndex) private var allGoals: [Goal]
-    @State private var selectedDate = Date.now
-    @State private var showEditor = false
-    @State private var amountGoal: Goal?
+    @Query private var rituals: [Ritual]
+    @Query private var progresses: [JourneyProgress]
 
-    private var goals: [Goal] { allGoals.filter { !$0.isArchived } }
+    @State private var selectedDate = Date.now
+    @State private var showGoalEditor = false
+    @State private var showRitualEditor = false
+    @State private var amountGoal: Goal?
+    @State private var playingRitual: Ritual?
+    @State private var addHabitRitual: Ritual?
+
+    private var activeGoals: [Goal] { allGoals.filter { !$0.isArchived } }
+    private var standaloneGoals: [Goal] { activeGoals.filter { $0.ritual == nil } }
+    private var sortedRituals: [Ritual] { rituals.sorted { $0.minutesOfDay < $1.minutesOfDay } }
+    private var activeProgress: JourneyProgress? {
+        progresses.first { $0.isActive && !$0.isCompleted }
+    }
 
     private var isToday: Bool { Calendar.app.isDateInToday(selectedDate) }
 
@@ -17,31 +29,71 @@ struct TodayView: View {
         return selectedDate.formatted(.dateTime.weekday(.wide).day().month())
     }
 
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: .now)
+        let base: String
+        switch hour {
+        case 5..<11: base = "Guten Morgen"
+        case 11..<17: base = "Hallo"
+        case 17..<22: base = "Guten Abend"
+        default: base = "Gute Nacht"
+        }
+        return userName.isEmpty ? base : "\(base), \(userName)"
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    WeekStrip(selectedDate: $selectedDate, goals: goals)
+                    Text(greeting)
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if goals.isEmpty {
-                        ContentUnavailableView {
-                            Label("Noch keine Ziele", systemImage: "target")
-                        } description: {
-                            Text("Lege dein erstes Ziel an und fang an zu tracken.")
-                        } actions: {
-                            Button("Ziel hinzufügen") { showEditor = true }
-                                .buttonStyle(.borderedProminent)
+                    WeekStrip(selectedDate: $selectedDate, goals: activeGoals)
+
+                    if !activeGoals.isEmpty {
+                        SummaryCard(goals: activeGoals, date: selectedDate)
+                    }
+
+                    if let progress = activeProgress, let journey = Journey.find(progress.journeyID) {
+                        NavigationLink(value: JourneyRoute(id: journey.id)) {
+                            JourneyBanner(journey: journey, progress: progress)
                         }
-                        .padding(.top, 40)
-                    } else {
-                        SummaryCard(goals: goals, date: selectedDate)
+                        .buttonStyle(.plain)
+                    }
 
-                        ForEach(goals) { goal in
+                    ForEach(sortedRituals) { ritual in
+                        RitualCard(ritual: ritual, date: selectedDate,
+                                   onStart: { playingRitual = ritual },
+                                   onAddHabit: { addHabitRitual = ritual })
+                    }
+
+                    if !standaloneGoals.isEmpty {
+                        Text("Ziele & Tracker")
+                            .font(.title3.bold())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 8)
+                        ForEach(standaloneGoals) { goal in
                             GoalCard(goal: goal, date: selectedDate) {
                                 amountGoal = goal
                             }
                         }
                     }
+
+                    HStack {
+                        Button { showRitualEditor = true } label: {
+                            Label("Ritual", systemImage: "plus")
+                                .frame(maxWidth: .infinity)
+                        }
+                        Button { showGoalEditor = true } label: {
+                            Label("Ziel / Tracker", systemImage: "plus")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .padding(.top, 8)
                 }
                 .padding()
             }
@@ -54,16 +106,26 @@ struct TodayView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showEditor = true } label: {
+                    Menu {
+                        Button { showRitualEditor = true } label: {
+                            Label("Neues Ritual", systemImage: "sunrise")
+                        }
+                        Button { showGoalEditor = true } label: {
+                            Label("Neue Gewohnheit / Ziel", systemImage: "target")
+                        }
+                    } label: {
                         Image(systemName: "plus.circle.fill").font(.title2)
                     }
                 }
             }
             .navigationDestination(for: Goal.self) { GoalDetailView(goal: $0) }
-            .sheet(isPresented: $showEditor) { GoalEditorView() }
-            .sheet(item: $amountGoal) { goal in
-                AmountSheet(goal: goal, date: selectedDate)
-            }
+            .navigationDestination(for: Ritual.self) { RitualDetailView(ritual: $0) }
+            .navigationDestination(for: JourneyRoute.self) { JourneyDetailView(journeyID: $0.id) }
+            .sheet(isPresented: $showGoalEditor) { GoalEditorView() }
+            .sheet(isPresented: $showRitualEditor) { RitualEditorView() }
+            .sheet(item: $addHabitRitual) { ritual in GoalEditorView(ritual: ritual) }
+            .sheet(item: $amountGoal) { goal in AmountSheet(goal: goal, date: selectedDate) }
+            .fullScreenCover(item: $playingRitual) { ritual in RitualPlayerView(ritual: ritual) }
         }
     }
 }
@@ -156,7 +218,7 @@ struct SummaryCard: View {
             .frame(width: 76, height: 76)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(done == goals.count ? "Alles geschafft! 🎉" : "\(done) von \(goals.count) Zielen erreicht")
+                Text(done == goals.count ? "Alles geschafft! 🎉" : "\(done) von \(goals.count) erledigt")
                     .font(.headline)
                 Text(Motivation.quote(for: date))
                     .font(.subheadline)

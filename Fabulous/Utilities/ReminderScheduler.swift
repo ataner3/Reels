@@ -31,4 +31,38 @@ enum ReminderScheduler {
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(withIdentifiers: [goal.uid.uuidString])
     }
+
+    static func update(for ritual: Ritual) {
+        let center = UNUserNotificationCenter.current()
+        let id = "ritual-" + ritual.uid.uuidString
+        center.removePendingNotificationRequests(withIdentifiers: [id])
+        guard ritual.reminderEnabled else { return }
+
+        let title = "\(ritual.emoji) \(ritual.name)"
+        let count = ritual.orderedHabits.count
+        let minutes = ritual.totalMinutes
+        let body = count == 0
+            ? "Zeit für dein Ritual."
+            : "\(count) Gewohnheiten · ca. \(minutes) Min. – du schaffst das!"
+        let components = Calendar.current.dateComponents([.hour, .minute], from: ritual.time)
+
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+            center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+        }
+    }
+
+    static func remove(for ritual: Ritual) {
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: ["ritual-" + ritual.uid.uuidString])
+    }
+
+    static func removeAll() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
 }

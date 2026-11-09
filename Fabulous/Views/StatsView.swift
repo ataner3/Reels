@@ -79,7 +79,7 @@ struct StatsView: View {
                 }
             }
             .background(Color(uiColor: .systemGroupedBackground))
-            .navigationTitle("Statistik")
+            .navigationTitle("Fortschritt")
             .navigationDestination(for: Goal.self) { GoalDetailView(goal: $0) }
         }
     }

@@ -56,6 +56,11 @@ final class Goal {
     var sortIndex: Int = 0
     var reminderEnabled: Bool = false
     var reminderTime: Date = Date.now
+    /// Ritual, zu dem diese Gewohnheit gehört (nil = eigenständiges Ziel/Tracker).
+    var ritual: Ritual?
+    var ritualOrder: Int = 0
+    /// Dauer im geführten Ritual-Modus (0 = kein Timer).
+    var durationMinutes: Int = 0
 
     @Relationship(deleteRule: .cascade, inverse: \Entry.goal)
     var entries: [Entry]? = []
@@ -243,6 +248,40 @@ extension Goal {
 // MARK: - Aktionen
 
 extension Goal {
+    /// Für Rituale: Ist die Gewohnheit an diesem Tag erledigt?
+    func isDone(onDay date: Date) -> Bool {
+        switch (kind, frequency) {
+        case (.count, .daily): isCompleted(for: date)
+        default: total(onDay: date) > 0
+        }
+    }
+
+    /// Markiert die Gewohnheit für diesen Tag als erledigt.
+    func completeForDay(_ date: Date, in context: ModelContext) {
+        guard !isDone(onDay: date) else { return }
+        switch (kind, frequency) {
+        case (.count, .daily):
+            log(max(target - total(onDay: date), step), on: date, in: context)
+        case (.count, .weekly):
+            log(step, on: date, in: context)
+        case (.check, _):
+            log(1, on: date, in: context)
+        }
+    }
+
+    /// Hebt die Erledigung für diesen Tag auf.
+    func resetDay(_ date: Date, in context: ModelContext) {
+        for entry in entriesOn(day: date) { remove(entry, in: context) }
+    }
+
+    func toggleDone(on date: Date, in context: ModelContext) {
+        if isDone(onDay: date) {
+            resetDay(date, in: context)
+        } else {
+            completeForDay(date, in: context)
+        }
+    }
+
     /// Haupt-Aktion des runden Buttons: abhaken bzw. einen Schritt hinzufügen.
     func primaryAction(on date: Date, in context: ModelContext) {
         switch kind {
