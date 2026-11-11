@@ -72,12 +72,14 @@ def elevenlabs_check() -> int:
     if info["limit"] is not None:
         print(f"  ✓ Tarif: {info['tier']} · verbraucht {info['used']:,} von {info['limit']:,} Zeichen "
               f"· frei: {elevenlabs.remaining(info):,}".replace(",", "."))
-    print(f"  {'✓' if info['voice_ok'] else '✗'} Stimme {el['voice_name']} ({el['voice_id']})"
-          + (f" – im Konto als „{info['voice_name']}“" if info["voice_ok"] else ""))
+    mark = {True: "✓", False: "✗", None: "?"}[info["voice_ok"]]
+    print(f"  {mark} Stimme {el['voice_name']} ({el['voice_id']})"
+          + (f" – im Konto als „{info['voice_name']}“" if info["voice_ok"] else "")
+          + (" – nicht prüfbar" if info["voice_ok"] is None else ""))
     for n in info["notes"]:
         print(f"  Hinweis: {n}")
     print("Diese Prüfung hat keine Zeichen verbraucht.")
-    return 0 if info["voice_ok"] else 2
+    return 2 if info["voice_ok"] is False else 0
 
 
 def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
@@ -97,7 +99,9 @@ def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
     print(f"  KOSTENPFLICHTIG: {len(todo)} Sätze mit zusammen {chars} Zeichen werden bei ElevenLabs erzeugt.")
     try:
         left = elevenlabs.remaining(elevenlabs.check())
-        if left is not None:
+        if left is None:
+            print("  Freies Kontingent: nicht lesbar (dem Schlüssel fehlt das Leserecht für das Konto).")
+        else:
             print(f"  Freies Kontingent: {left} Zeichen" + ("" if left >= chars else " – das reicht NICHT."))
             if left < chars:
                 return 2

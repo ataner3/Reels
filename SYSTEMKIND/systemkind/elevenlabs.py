@@ -89,8 +89,19 @@ def check() -> dict:
         sub = _request("GET", "/v1/user/subscription")
         out.update(used=sub.get("character_count"), limit=sub.get("character_limit"), tier=sub.get("tier"))
     except ElevenLabsError as e:      # Schlüssel ohne Leserecht auf das Konto ist kein Hindernis
-        out["notes"].append(f"Kontingent nicht lesbar: {e}")
-    voices = _request("GET", "/v1/voices").get("voices", [])
+        if "missing_permissions" not in str(e):
+            raise
+        out["notes"].append("Der Schlüssel hat kein Leserecht für das Konto (user_read) – "
+                            "das freie Kontingent lässt sich nicht anzeigen.")
+    try:
+        voices = _request("GET", "/v1/voices").get("voices", [])
+    except ElevenLabsError as e:
+        if "missing_permissions" not in str(e):
+            raise                      # echter Fehler, z. B. ungültiger Schlüssel
+        out["voice_ok"] = None         # Schlüssel gültig, darf die Stimmenliste aber nicht lesen
+        out["notes"].append("Der Schlüssel hat kein Leserecht für Stimmen (voices_read) – "
+                            "die Stimme lässt sich vorab nicht prüfen.")
+        return out
     by_id = {v.get("voice_id"): v for v in voices}
     if el["voice_id"] in by_id:
         out.update(voice_ok=True, voice_name=by_id[el["voice_id"]].get("name"))
