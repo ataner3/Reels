@@ -2,3 +2,4 @@ build/
 __pycache__/
 voices/*.onnx
 voices/*.onnx.json
+.env

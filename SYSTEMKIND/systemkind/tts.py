@@ -12,12 +12,42 @@ import numpy as np
 from . import config as C
 
 _voices = {}
+PROVIDER_OVERRIDE = None      # von main.py --voice gesetzt
 CACHE = C.BUILD / "_tts_cache"
 
 
 def settings(project: dict | None = None) -> dict:
     """Markenstimme aus der Konfiguration, ergänzt um Projektwerte."""
-    return {**C.VOICE, **((project or {}).get("voice") or {})}
+    vs = {**C.VOICE, **((project or {}).get("voice") or {})}
+    if PROVIDER_OVERRIDE:
+        vs["provider"] = PROVIDER_OVERRIDE
+    return vs
+
+
+def is_elevenlabs(vs: dict) -> bool:
+    return vs.get("provider") == "elevenlabs"
+
+
+def text_for(sentence: dict, vs: dict) -> str:
+    """Welcher Text gesprochen wird. Piper bekommt "say" (Zahlen ausgeschrieben,
+    Aussprachehilfen); ElevenLabs liest den normalen Text, außer es gibt
+    "say_elevenlabs"."""
+    if is_elevenlabs(vs):
+        return sentence.get("say_elevenlabs") or sentence["text"]
+    return sentence.get("say") or sentence["text"]
+
+
+def voice_filter(vs: dict) -> str:
+    return C.VOICE_FILTER_CLEAN if is_elevenlabs(vs) else C.VOICE_FILTER
+
+
+def describe(vs: dict) -> str:
+    if is_elevenlabs(vs):
+        el = {**C.ELEVENLABS, **(vs.get("elevenlabs") or {})}
+        return (f"ElevenLabs „{el['voice_name']}“ ({el['voice_id']}), Modell {el['model_id']} – "
+                "Nutzungsrechte laut deinem ElevenLabs-Tarif")
+    return (f"Piper TTS `{vs['name']}`" + (f", Sprecher {vs['speaker']}" if vs.get("speaker") is not None else "")
+            + f", Tonhöhe {vs.get('pitch') or 0:+.1f} Halbtöne – {voice_license(vs['name'])}")
 
 
 def voice_files(name=None):
@@ -123,6 +153,10 @@ def synth(text: str, vs: dict | None = None):
     vs = Stimm-Einstellungen (siehe config.VOICE). Wortzeiten: [[start, ende], ...]
     in Sekunden, ein Eintrag je gesprochenem Wort."""
     vs = {**C.VOICE, **(vs or {})}
+    if is_elevenlabs(vs):
+        from . import elevenlabs
+        path, words = elevenlabs.synth_file(text, vs.get("elevenlabs"))
+        return _decode(path, words)
     CACHE.mkdir(parents=True, exist_ok=True)
     text = spoken(text)
     # Tonhöhe ohne Artefakte: langsamer abspielen (tiefer) und dafür entsprechend
@@ -143,9 +177,14 @@ def synth(text: str, vs: dict | None = None):
         tmp.rename(raw)
         meta.write_text(json.dumps({"sr": sr, "words": _word_times(al, sr)}))
     info = json.loads(meta.read_text())
-    af = f"asetrate={info['sr'] * f:.0f},aresample={C.AUDIO_SR}:resampler=soxr" if abs(f - 1) > 1e-3 else "anull"
+    return _decode(raw, info["words"], f, info["sr"])
+
+
+def _decode(path, words, f=1.0, sr=None):
+    """Audiodatei -> (Mono float32 bei C.AUDIO_SR ohne Randstille, Wortzeiten)."""
+    af = f"asetrate={sr * f:.0f},aresample={C.AUDIO_SR}:resampler=soxr" if abs(f - 1) > 1e-3 else "anull"
     out = subprocess.run(
-        ["ffmpeg", "-nostdin", "-v", "error", "-i", str(raw), "-af", af, "-ac", "1", "-ar", str(C.AUDIO_SR),
+        ["ffmpeg", "-nostdin", "-v", "error", "-i", str(path), "-af", af, "-ac", "1", "-ar", str(C.AUDIO_SR),
          "-f", "f32le", "-"], capture_output=True, check=True).stdout
     x = np.frombuffer(out, np.float32).copy()
     idx = np.flatnonzero(np.abs(x) > 0.012)     # Stille am Rand entfernen
@@ -153,7 +192,7 @@ def synth(text: str, vs: dict | None = None):
     off = a / C.AUDIO_SR
     x = x[a:b]
     dur = len(x) / C.AUDIO_SR
-    words = [[min(max(s / f - off, 0), dur), min(max(e / f - off, 0), dur)] for s, e in info["words"]]
+    words = [[min(max(s / f - off, 0), dur), min(max(e / f - off, 0), dur)] for s, e in words or []]
     return x, (words or None)
 
 
@@ -168,7 +207,7 @@ def samples(out_dir):
     for label, vs in C.VOICE_PRESETS.items():
         if not voice_available(vs["name"]):
             download_voice(vs["name"])
-        x, _ = synth(SAMPLE_TEXT, vs)
+        x, _ = synth(SAMPLE_TEXT, {**vs, "provider": "piper"})
         path = out_dir / f"stimme_{label}.mp3"
         subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-f", "f32le", "-ar", str(C.AUDIO_SR), "-ac", "1",
                         "-i", "-", "-af", C.VOICE_FILTER + ",loudnorm=I=-16:TP=-2", "-b:a", "160k", str(path)],

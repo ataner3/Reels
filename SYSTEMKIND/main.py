@@ -56,7 +56,67 @@ def check_environment(verbose=True) -> bool:
     return ok
 
 
-def produce(topic: str, review: bool, approve: bool) -> int:
+def elevenlabs_check() -> int:
+    """Kostenfreie Prüfung von Schlüssel, Kontingent und Stimme."""
+    from systemkind import elevenlabs
+    el = C.ELEVENLABS
+    if not elevenlabs.api_key():
+        print("Kein Schlüssel gefunden. Bitte zuerst: python main.py --elevenlabs-setup")
+        return 2
+    try:
+        info = elevenlabs.check()
+    except elevenlabs.ElevenLabsError as e:
+        print(f"  ✗ {e}")
+        return 2
+    print("  ✓ Schlüssel wird akzeptiert")
+    if info["limit"] is not None:
+        print(f"  ✓ Tarif: {info['tier']} · verbraucht {info['used']:,} von {info['limit']:,} Zeichen "
+              f"· frei: {elevenlabs.remaining(info):,}".replace(",", "."))
+    print(f"  {'✓' if info['voice_ok'] else '✗'} Stimme {el['voice_name']} ({el['voice_id']})"
+          + (f" – im Konto als „{info['voice_name']}“" if info["voice_ok"] else ""))
+    for n in info["notes"]:
+        print(f"  Hinweis: {n}")
+    print("Diese Prüfung hat keine Zeichen verbraucht.")
+    return 0 if info["voice_ok"] else 2
+
+
+def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
+    """Vor jedem kostenpflichtigen Aufruf: Umfang zeigen und Zustimmung einholen."""
+    from systemkind import elevenlabs, tts
+    el = {**C.ELEVENLABS, **(vs.get("elevenlabs") or {})}
+    texts = [tts.text_for(s, vs) for sc in proj["scenes"] for s in sc.get("vo", [])]
+    todo = [t for t in texts if not elevenlabs.cached(t, el)]
+    chars = sum(len(t) for t in todo)
+    print(f"  ElevenLabs · Stimme {el['voice_name']} · {len(texts)} Sätze, davon {len(texts) - len(todo)} im Cache")
+    if not todo:
+        print("  Alles im Cache – es entstehen keine Kosten.")
+        return 0
+    if not elevenlabs.api_key():
+        print("  Kein Schlüssel gefunden. Bitte zuerst: python main.py --elevenlabs-setup")
+        return 2
+    print(f"  KOSTENPFLICHTIG: {len(todo)} Sätze mit zusammen {chars} Zeichen werden bei ElevenLabs erzeugt.")
+    try:
+        left = elevenlabs.remaining(elevenlabs.check())
+        if left is not None:
+            print(f"  Freies Kontingent: {left} Zeichen" + ("" if left >= chars else " – das reicht NICHT."))
+            if left < chars:
+                return 2
+    except elevenlabs.ElevenLabsError as e:
+        print(f"  ✗ {e}")
+        return 2
+    if confirm_paid:
+        return 0
+    try:
+        ans = input(f"  {chars} Zeichen jetzt verbrauchen? [j/N] > ").strip().lower()
+    except EOFError:
+        ans = ""
+    if ans != "j":
+        print("  Nicht bestätigt – es wurde nichts bei ElevenLabs erzeugt.")
+        return 1
+    return 0
+
+
+def produce(topic: str, review: bool, approve: bool, confirm_paid: bool = False) -> int:
     from systemkind import assets, audio, project, qc, render, report, timeline, tts
     from systemkind import review as review_mod
 
@@ -82,10 +142,14 @@ def produce(topic: str, review: bool, approve: bool) -> int:
                 print(f"  ✗ {e}")
             return 2
 
-        vname = tts.settings(proj)["name"]
-        if not tts.voice_available(vname):
-            print(f"  Lade Stimme {vname} …")
-            tts.download_voice(vname)
+        vs = tts.settings(proj)
+        if tts.is_elevenlabs(vs):
+            code = elevenlabs_gate(proj, vs, confirm_paid)
+            if code:
+                return code
+        elif not tts.voice_available(vs["name"]):
+            print(f"  Lade Stimme {vs['name']} …")
+            tts.download_voice(vs["name"])
         work = C.BUILD / proj["slug"]
         work.mkdir(parents=True, exist_ok=True)
 
@@ -123,7 +187,8 @@ def produce(topic: str, review: bool, approve: bool) -> int:
     print("\n[D] AUDIO – Musik, Soundeffekte, Mischung")
     audio.write_wav(work / "music.wav", audio.music(tl["duration"], proj.get("music", {}).get("seed", 3)))
     audio.write_wav(work / "sfx.wav", audio.sfx_track(tl["sfx"], tl["duration"]))
-    audio.mix(work / "vo.wav", work / "music.wav", work / "sfx.wav", work / "mix.wav", tl["duration"])
+    audio.mix(work / "vo.wav", work / "music.wav", work / "sfx.wav", work / "mix.wav", tl["duration"],
+              tts.voice_filter(tts.settings(proj)))
     print(f"  {len(tl['sfx'])} Soundeffekte, Ziel-Lautheit {C.TARGET_LUFS:.0f} LUFS")
 
     print("\n[E] VIDEO – Szenen rendern")
@@ -163,6 +228,10 @@ def main():
     ap.add_argument("--check", action="store_true", help="Hardware und Software prüfen")
     ap.add_argument("--setup", action="store_true", help="Piper-Stimme herunterladen und Umgebung prüfen")
     ap.add_argument("--list", action="store_true", help="Projekte anzeigen")
+    ap.add_argument("--voice", choices=["piper", "elevenlabs"], help="Sprachausgabe für diesen Lauf wählen")
+    ap.add_argument("--elevenlabs-setup", action="store_true", help="ElevenLabs-Schlüssel verdeckt eingeben und speichern")
+    ap.add_argument("--elevenlabs-check", action="store_true", help="Schlüssel, Kontingent und Stimme prüfen (kostenfrei)")
+    ap.add_argument("--confirm-paid", action="store_true", help="Zeichenverbrauch bei ElevenLabs ohne Rückfrage bestätigen")
     ap.add_argument("--phonemes", action="store_true", help="Aussprache des Skripts als Lautschrift anzeigen")
     ap.add_argument("--voice-samples", action="store_true", help="Hörproben der Stimm-Presets erzeugen")
     ap.add_argument("--assets", action="store_true", help="B-Roll-Bibliothek anzeigen")
@@ -174,6 +243,16 @@ def main():
     ap.add_argument("--author", default="", help="Urheber")
     a = ap.parse_args()
 
+    if a.voice:
+        from systemkind import tts
+        tts.PROVIDER_OVERRIDE = a.voice
+    if a.elevenlabs_setup:
+        from systemkind import elevenlabs
+        if not elevenlabs.save_key_interactive():
+            return 1
+        return elevenlabs_check()
+    if a.elevenlabs_check:
+        return elevenlabs_check()
     if a.setup:
         from systemkind import tts
         print("Stimme:")
@@ -212,7 +291,7 @@ def main():
         if proj is None:
             print("Projekt nicht gefunden.")
             return 2
-        vs = tts.settings(proj)
+        vs = {**tts.settings(proj), "provider": "piper"}
         for sc in proj["scenes"]:
             for snt in sc.get("vo", []):
                 print(f"{snt['text']}\n    {tts.phonemes(snt.get('say') or snt['text'], vs)}")
@@ -223,7 +302,7 @@ def main():
             print("Die Umgebung ist unvollständig:")
             check_environment()
             return 1
-        return produce(a.topic, a.review, a.approve)
+        return produce(a.topic, a.review, a.approve, a.confirm_paid)
     ap.print_help()
     return 0
 

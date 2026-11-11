@@ -41,6 +41,7 @@ CAPTION_Y = 1455                 # Mittelpunkt der Untertitelzeile
 # Markenstimme für alle Videos. Ein Projekt kann einzelne Werte unter "voice"
 # überschreiben. Hörproben: python main.py --voice-samples
 VOICE = {
+    "provider": "piper",             # "piper" (lokal, kostenlos) oder "elevenlabs" (Konto nötig)
     "name": "de_DE-karlsson-low",    # Piper-Stimme (wird bei Bedarf geladen)
     "speaker": None,                 # nur bei Mehrsprecher-Modellen, z. B. de_DE-mls-medium
     "pitch": -1.0,                   # Halbtöne; negativ = tiefer
@@ -48,6 +49,19 @@ VOICE = {
     "noise_scale": None,             # None = Standard der Stimme (natürliche Betonung)
     "noise_w": None,
 }
+# ElevenLabs – gilt, wenn provider "elevenlabs" ist (python main.py --voice elevenlabs).
+ELEVENLABS = {
+    "voice_id": "CwhRBWXzGAHq8TQ4Fs17",     # Roger – Laid-Back, Casual, Resonant
+    "voice_name": "Roger",
+    "model_id": "eleven_multilingual_v2",    # spricht Deutsch
+    "stability": 0.5,                        # höher = gleichmäßiger, niedriger = lebendiger
+    "similarity_boost": 0.75,
+    "style": 0.0,
+    "speed": 1.0,                            # 0.7 bis 1.2
+    "output_format": "mp3_44100_128",
+}
+# Aufbereitung für ElevenLabs: die Stimme ist bereits studiofertig, daher nur leicht
+VOICE_FILTER_CLEAN = "highpass=f=60,acompressor=threshold=-20dB:ratio=2:attack=10:release=200:makeup=1.5"
 VOICE_PRESETS = {                    # für --voice-samples
     "A_thorsten_tief": {"name": "de_DE-thorsten-high", "pitch": -2.0, "length_scale": 1.0, "noise_scale": 0.5, "noise_w": 0.7},
     "B_hoerbuch_253": {"name": "de_DE-mls-medium", "speaker": 39, "pitch": 0.0, "length_scale": 0.92},

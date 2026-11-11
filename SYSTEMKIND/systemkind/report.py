@@ -34,8 +34,7 @@ def write(path, proj, tl, checks, used_broll, missing, warnings, files, loud=Non
     if unc:
         L += ["", "## Unsicherheiten", ""] + [f"- {u}" for u in unc]
     L += ["", "## Verwendete Assets und Lizenzen", "",
-          f"- Stimme: Piper TTS `{vs['name']}`" + (f", Sprecher {vs['speaker']}" if vs.get("speaker") is not None else "")
-          + f", Tonhöhe {vs.get('pitch') or 0:+.1f} Halbtöne – {tts.voice_license(vs['name'])}",
+          f"- Stimme: {tts.describe(vs)}",
           "- Musik und Soundeffekte: von der Pipeline selbst erzeugt (prozedural), keine Fremdrechte",
           "- Grafiken und Animationen: von der Pipeline selbst erzeugt",
           "- Schriften: Playfair Display und Inter – SIL Open Font License 1.1"]

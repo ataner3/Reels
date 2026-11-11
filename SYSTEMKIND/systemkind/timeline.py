@@ -20,7 +20,7 @@ def build(project: dict, log=print) -> tuple[dict, np.ndarray]:
         t = C.VO_LEAD_IN
         beats, sents, wtimes = [], [], []
         for s in sc.get("vo", []):
-            audio, words = tts.synth(s.get("say") or s["text"], vs)
+            audio, words = tts.synth(tts.text_for(s, vs), vs)
             dur = len(audio) / sr
             beats.append(t)
             sents.append({"text": s["text"], "start": cursor + t, "dur": dur})

@@ -173,11 +173,11 @@ def write_wav(path, x):
         wf.writeframes((x * 32767).astype("<i2").tobytes())
 
 
-def mix(vo_path, music_path, sfx_path, out_path, duration: float) -> dict:
+def mix(vo_path, music_path, sfx_path, out_path, duration: float, voice_filter: str | None = None) -> dict:
     """Stimme aufbereiten, Musik unter der Stimme absenken (Sidechain),
     alles mischen und in zwei Durchgängen auf Ziel-Lautheit normalisieren."""
     graph = (
-        f"[0:a]{C.VOICE_FILTER},"
+        f"[0:a]{voice_filter or C.VOICE_FILTER},"
         "aformat=channel_layouts=stereo,asplit=2[vo][key];"
         "[1:a]volume=0.5[mus];"
         "[mus][key]sidechaincompress=threshold=0.02:ratio=5:attack=20:release=420[duck];"

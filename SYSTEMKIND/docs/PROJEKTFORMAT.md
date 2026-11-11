@@ -37,7 +37,7 @@ Gemeinsame Felder:
 | `background` | `particles`, `grid`, `rings`, `skyline`, `beams`, `plain` |
 | `transition` | Übergang in die Szene: `fade`, `dip`, `push`, `sweep`, `cut` |
 | `broll` | optional: Schlagworte für einen Clip aus der Bibliothek |
-| `vo` | Sätze: `text` (Untertitel) und optional `say` (Aussprache, z. B. Zahlen ausgeschrieben, Wort für Wort) |
+| `vo` | Sätze: `text` (Untertitel) und optional `say` (Aussprache, z. B. Zahlen ausgeschrieben, Wort für Wort); `say_elevenlabs` nur für ElevenLabs |
 | `params` | Inhalt der Vorlage |
 
 Die Länge einer Szene ergibt sich aus ihrem Voice-over.

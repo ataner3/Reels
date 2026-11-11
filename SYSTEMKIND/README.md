@@ -41,6 +41,7 @@ Ergebnis in `EXPORTS/`:
 | `python main.py --check` | Hardware und Software prüfen. |
 | `python main.py --list` | Projekte anzeigen. |
 | `python main.py --voice-samples` | Hörproben der Stimm-Presets erzeugen. |
+| `python main.py --topic "…" --voice elevenlabs` | Mit ElevenLabs statt Piper sprechen (fragt vor Kosten nach). |
 | `python main.py --assets` | B-Roll-Bibliothek anzeigen. |
 | `python main.py --add-asset clip.mp4 --tags stadt,nacht --source Pexels --url <Link> --license "Pexels License" --author <Name>` | Clip mit Quelle und Lizenz aufnehmen. |
 
@@ -67,6 +68,25 @@ python main.py --voice-samples     # Hörproben aller Presets nach EXPORTS/stimm
 
 Fehlende Stimmen werden beim ersten Gebrauch geladen. Die Aufbereitung in der
 Mischung (`VOICE_FILTER`) ist auf einen warmen, weichen Klang eingestellt.
+
+### ElevenLabs (optional)
+
+Neben Piper kann ElevenLabs sprechen – eingestellt ist die Stimme „Roger“
+(`ELEVENLABS` in `systemkind/config.py`). Piper bleibt der Standard.
+
+```bash
+python main.py --elevenlabs-setup     # Schlüssel verdeckt eingeben; landet in .env (nicht in Git)
+python main.py --elevenlabs-check     # prüft Schlüssel, Kontingent und Stimme – kostenfrei
+python main.py --topic "…" --voice elevenlabs
+```
+
+- Vor jedem kostenpflichtigen Aufruf zeigt die Pipeline die Zeichenzahl und fragt nach.
+  `--confirm-paid` bestätigt ohne Rückfrage.
+- Jeder Satz wird nur einmal erzeugt und liegt danach in `assets/voice_cache/elevenlabs/`.
+  Ein zweiter Lauf mit demselben Text kostet nichts.
+- ElevenLabs liest den normalen Text (`text`). Für Sonderfälle gibt es je Satz `say_elevenlabs`.
+- Der Schlüssel kann statt in `.env` auch in der Umgebungsvariable `ELEVENLABS_API_KEY` stehen.
+- Dauerhaft umstellen: `"provider": "elevenlabs"` in `VOICE`.
 
 ### Aussprache
 
@@ -97,6 +117,7 @@ main.py                 Einstieg und Ablaufsteuerung
 systemkind/config.py    Marke (Farben, Schriften), Videoformat, Pfade
 systemkind/project.py   Projektdatei laden, prüfen, neu anlegen
 systemkind/tts.py       Voice-over mit Piper, wortgenaue Zeiten
+systemkind/elevenlabs.py  ElevenLabs-Anbindung (Schlüssel, Prüfung, Cache)
 systemkind/timeline.py  Szenenzeiten, Untertitel, SRT
 systemkind/scenes.py    Szenen-Vorlagen (title, statement, bars, compare, growth, formula, outro)
 systemkind/gfx.py       Typografie, Easing, animierte Hintergründe

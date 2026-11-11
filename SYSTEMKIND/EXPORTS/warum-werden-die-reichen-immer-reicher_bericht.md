@@ -1,6 +1,6 @@
 # Produktionsbericht – Warum werden die Reichen immer reicher?
 
-- Erstellt: 11.11.2026 16:58
+- Erstellt: 11.11.2026 17:27
 - Video: `warum-werden-die-reichen-immer-reicher.mp4`
 - Untertitel: `warum-werden-die-reichen-immer-reicher.srt`
 - Länge: 56.6 s · 6 Szenen · 127 Wörter Voice-over
