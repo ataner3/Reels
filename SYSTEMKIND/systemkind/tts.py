@@ -57,7 +57,48 @@ def _load(name):
             _voices[name] = PiperVoice.load(str(model), config_path=str(cfg), include_alignments=True)
         except Exception:
             _voices[name] = PiperVoice.load(str(model), config_path=str(cfg))
+        v = _voices[name]
+        # Ältere Stimmen kennen einzelne Zusatzzeichen der Lautschrift nicht. Piper
+        # überspringt sie beim Sprechen, liefert dann aber keine Wortzeiten mehr.
+        # Deshalb hier vorab entfernen – der Klang bleibt identisch.
+        known, orig = v.config.phoneme_id_map, v.phonemize
+        v.phonemize = lambda text: [[p for p in sent if p in known] for sent in orig(text)]
     return _voices[name]
+
+
+_lex = None
+
+
+def lexicon() -> dict:
+    global _lex
+    if _lex is None:
+        path = C.ASSETS / "aussprache.json"
+        _lex = {k: v for k, v in json.loads(path.read_text(encoding="utf-8")).items()
+                if not k.startswith("_")} if path.exists() else {}
+    return _lex
+
+
+def spoken(text: str) -> str:
+    """Wendet das Aussprache-Wörterbuch an. Satzzeichen wandern mit in den
+    Lautschrift-Block, weil Piper sie dahinter sonst verschluckt."""
+    out = []
+    for tok in text.split():
+        core = tok.rstrip(".,:;?!")
+        punct = tok[len(core):]
+        rep = lexicon().get(core)
+        if rep is None:
+            out.append(tok)
+        elif rep.startswith("[["):
+            out.append(f"[[ {rep.strip('[] ')}{punct} ]]")
+        else:
+            out.append(rep + punct)
+    return " ".join(out)
+
+
+def phonemes(text: str, vs: dict | None = None) -> str:
+    """Lautschrift, wie die Stimme den Text sprechen wird (zur Kontrolle)."""
+    vs = {**C.VOICE, **(vs or {})}
+    return " | ".join("".join(p) for p in _load(vs["name"]).phonemize(spoken(text)))
 
 
 def _word_times(alignments, sr):
@@ -83,12 +124,17 @@ def synth(text: str, vs: dict | None = None):
     in Sekunden, ein Eintrag je gesprochenem Wort."""
     vs = {**C.VOICE, **(vs or {})}
     CACHE.mkdir(parents=True, exist_ok=True)
-    ident = [vs["name"], vs.get("speaker"), vs.get("length_scale"), vs.get("noise_scale"), vs.get("noise_w"), text]
+    text = spoken(text)
+    # Tonhöhe ohne Artefakte: langsamer abspielen (tiefer) und dafür entsprechend
+    # schneller synthetisieren. Kein Time-Stretching, das metallisch klingen kann.
+    f = 2 ** (float(vs.get("pitch") or 0) / 12)
+    scale = round(float(vs.get("length_scale") or 1.0) * f, 4)
+    ident = [vs["name"], vs.get("speaker"), scale, vs.get("noise_scale"), vs.get("noise_w"), text]
     key = hashlib.sha1(json.dumps(ident).encode()).hexdigest()[:20]
     raw, meta = CACHE / f"{key}.wav", CACHE / f"{key}.json"
     if not (raw.exists() and meta.exists()):
         from piper import SynthesisConfig
-        cfg = SynthesisConfig(speaker_id=vs.get("speaker"), length_scale=vs.get("length_scale"),
+        cfg = SynthesisConfig(speaker_id=vs.get("speaker"), length_scale=scale,
                               noise_scale=vs.get("noise_scale"), noise_w_scale=vs.get("noise_w"))
         tmp = raw.with_suffix(".tmp.wav")
         with wave.open(str(tmp), "wb") as wf:
@@ -97,10 +143,7 @@ def synth(text: str, vs: dict | None = None):
         tmp.rename(raw)
         meta.write_text(json.dumps({"sr": sr, "words": _word_times(al, sr)}))
     info = json.loads(meta.read_text())
-    # Tonhöhe: Abspielrate ändern und das Tempo wieder ausgleichen – die Stimme
-    # klingt tiefer und voller, die Wortzeiten bleiben gleich.
-    f = 2 ** (float(vs.get("pitch") or 0) / 12)
-    af = f"asetrate={info['sr'] * f:.0f},aresample={C.AUDIO_SR},atempo={1 / f:.5f}" if abs(f - 1) > 1e-3 else "anull"
+    af = f"asetrate={info['sr'] * f:.0f},aresample={C.AUDIO_SR}:resampler=soxr" if abs(f - 1) > 1e-3 else "anull"
     out = subprocess.run(
         ["ffmpeg", "-nostdin", "-v", "error", "-i", str(raw), "-af", af, "-ac", "1", "-ar", str(C.AUDIO_SR),
          "-f", "f32le", "-"], capture_output=True, check=True).stdout
@@ -110,7 +153,7 @@ def synth(text: str, vs: dict | None = None):
     off = a / C.AUDIO_SR
     x = x[a:b]
     dur = len(x) / C.AUDIO_SR
-    words = [[min(max(s - off, 0), dur), min(max(e - off, 0), dur)] for s, e in info["words"]]
+    words = [[min(max(s / f - off, 0), dur), min(max(e / f - off, 0), dur)] for s, e in info["words"]]
     return x, (words or None)
 
 

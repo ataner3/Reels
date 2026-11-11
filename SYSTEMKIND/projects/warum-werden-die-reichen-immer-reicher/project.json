@@ -89,7 +89,7 @@
       "vo": [
         {"text": "Der erste Grund: Vermögen arbeitet mit."},
         {"text": "Wer arbeitet, tauscht Zeit gegen Geld."},
-        {"text": "Wer Aktien, Immobilien oder Firmen besitzt, erhält Erträge – und kann sie wieder anlegen."}
+        {"text": "Wer Aktien oder Immobilien besitzt, erhält Erträge – und kann sie wieder anlegen."}
       ],
       "params": {
         "kicker": "Grund 1",
@@ -108,7 +108,7 @@
       "facts": ["f2"],
       "vo": [
         {"text": "Der zweite Grund: der Zinseszins."},
-        {"text": "Ein Rechenbeispiel mit fünf Prozent Rendite pro Jahr."},
+        {"text": "Ein Rechenbeispiel: fünf Prozent Rendite pro Jahr."},
         {"text": "Aus 10.000 Euro werden in dreißig Jahren rund 43.000.",
          "say": "Aus zehntausend Euro werden in dreißig Jahren rund dreiundvierzigtausend."},
         {"text": "Aus einer Million: über vier Millionen."}
@@ -136,9 +136,8 @@
       "facts": ["f3"],
       "vo": [
         {"text": "Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g.",
-         "say": "Der Ökonom Thomas Piketti fasst das in eine Formel: Err größer Geh."},
-        {"text": "Laut Piketty lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum.",
-         "say": "Laut Piketti lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum."},
+         "say": "Der Ökonom Thomas Piketty fasst das in eine Formel: Err größer Geh."},
+        {"text": "Kapital wuchs demnach meist schneller als die Wirtschaft."},
         {"text": "Die These ist unter Ökonomen umstritten."}
       ],
       "params": {
@@ -161,7 +160,8 @@
       "vo": [
         {"text": "Vermögen kann sich selbst vermehren."},
         {"text": "Arbeitszeit nicht."},
-        {"text": "Das ist kein Zufall. Das ist das System."}
+        {"text": "Das ist kein Zufall."},
+        {"text": "Das ist das System."}
       ],
       "params": {
         "lines": ["Vermögen vermehrt sich.", "*Arbeitszeit nicht.*"],

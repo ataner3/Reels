@@ -163,6 +163,7 @@ def main():
     ap.add_argument("--check", action="store_true", help="Hardware und Software prüfen")
     ap.add_argument("--setup", action="store_true", help="Piper-Stimme herunterladen und Umgebung prüfen")
     ap.add_argument("--list", action="store_true", help="Projekte anzeigen")
+    ap.add_argument("--phonemes", action="store_true", help="Aussprache des Skripts als Lautschrift anzeigen")
     ap.add_argument("--voice-samples", action="store_true", help="Hörproben der Stimm-Presets erzeugen")
     ap.add_argument("--assets", action="store_true", help="B-Roll-Bibliothek anzeigen")
     ap.add_argument("--add-asset", metavar="DATEI", help="Clip in die B-Roll-Bibliothek aufnehmen")
@@ -204,6 +205,18 @@ def main():
         for p in sorted(C.PROJECTS.glob("*/project.json")):
             j = json.loads(p.read_text(encoding="utf-8"))
             print(f"  [{j.get('status', '?'):^8}] {j.get('topic')}")
+        return 0
+    if a.topic and a.phonemes:
+        from systemkind import project, tts
+        proj = project.load(a.topic)
+        if proj is None:
+            print("Projekt nicht gefunden.")
+            return 2
+        vs = tts.settings(proj)
+        for sc in proj["scenes"]:
+            for snt in sc.get("vo", []):
+                print(f"{snt['text']}\n    {tts.phonemes(snt.get('say') or snt['text'], vs)}")
+        print(f"\nKorrekturen: {C.ASSETS / 'aussprache.json'}")
         return 0
     if a.topic:
         if not check_environment(verbose=False):

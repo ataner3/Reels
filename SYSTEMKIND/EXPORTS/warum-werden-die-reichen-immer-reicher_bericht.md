@@ -1,9 +1,9 @@
 # Produktionsbericht – Warum werden die Reichen immer reicher?
 
-- Erstellt: 11.11.2026 16:48
+- Erstellt: 11.11.2026 16:58
 - Video: `warum-werden-die-reichen-immer-reicher.mp4`
 - Untertitel: `warum-werden-die-reichen-immer-reicher.srt`
-- Länge: 56.4 s · 6 Szenen · 131 Wörter Voice-over
+- Länge: 56.6 s · 6 Szenen · 127 Wörter Voice-over
 - Qualitätskontrolle: **bestanden**
 
 ## Qualitätskontrolle
@@ -17,31 +17,31 @@
 | Bildrate 30 FPS | ✅ | 30/1 |
 | Pixelformat yuv420p | ✅ | yuv420p |
 | Audio-Codec AAC | ✅ | aac, 48000 Hz, 2 Kanäle |
-| Länge 30–60 s | ✅ | 56.40 s |
-| Bild und Ton gleich lang | ✅ | Abweichung 0.000 s |
+| Länge 30–60 s | ✅ | 56.57 s |
+| Bild und Ton gleich lang | ✅ | Abweichung 0.034 s |
 | Datei vollständig dekodierbar | ✅ | keine Fehler |
 | Keine Schwarzbilder | ✅ | keine |
 | Keine Tonlücken | ✅ | keine |
-| Lautheit -14 LUFS (±1,5) | ✅ | -14.1 LUFS |
-| True Peak ≤ −1 dBTP | ✅ | -1.9 dBTP |
-| Untertitel vorhanden | ✅ | 46 Einblendungen |
+| Lautheit -14 LUFS (±1,5) | ✅ | -14.0 LUFS |
+| True Peak ≤ −1 dBTP | ✅ | -2.0 dBTP |
+| Untertitel vorhanden | ✅ | 45 Einblendungen |
 | Untertitel ohne Überlappung | ✅ | 0 Überlappungen |
-| Untertitel innerhalb der Laufzeit | ✅ | letzte endet bei 56.11 s |
-| Untertitel-Zeilenlänge ≤ 30 Zeichen | ✅ | längste Zeile: 29 Zeichen |
+| Untertitel innerhalb der Laufzeit | ✅ | letzte endet bei 56.33 s |
+| Untertitel-Zeilenlänge ≤ 30 Zeichen | ✅ | längste Zeile: 28 Zeichen |
 | Untertitel lang genug lesbar | ✅ | alle ≥ 0,3 s |
-| SRT-Datei vollständig | ✅ | 46 Einträge |
+| SRT-Datei vollständig | ✅ | 45 Einträge |
 | Alle Szenen haben Bildinhalt | ✅ | 6 Szenen geprüft |
 
 ## Szenen
 
 | # | Start | Dauer | Typ | Hintergrund | Voice-over |
 |---|---|---|---|---|---|
-| 1 | 0.0 s | 5.3 s | title | particles | Warum werden die Reichen immer reicher? Nicht durch Zufall. Sondern durch ein System. |
-| 2 | 5.3 s | 10.8 s | bars | grid | Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens. Die ärmere Hälfte der Menschheit: zwei Prozent. |
-| 3 | 16.1 s | 10.6 s | compare | beams | Der erste Grund: Vermögen arbeitet mit. Wer arbeitet, tauscht Zeit gegen Geld. Wer Aktien, Immobilien oder Firmen besitzt, erhält Erträge – und kann sie wieder anlegen. |
-| 4 | 26.8 s | 12.5 s | growth | plain | Der zweite Grund: der Zinseszins. Ein Rechenbeispiel mit fünf Prozent Rendite pro Jahr. Aus 10.000 Euro werden in dreißig Jahren rund 43.000. Aus einer Million: über vier Millionen. |
-| 5 | 39.3 s | 10.9 s | formula | rings | Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g. Laut Piketty lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum. Die These ist unter Ökonomen umstritten. |
-| 6 | 50.2 s | 6.2 s | outro | skyline | Vermögen kann sich selbst vermehren. Arbeitszeit nicht. Das ist kein Zufall. Das ist das System. |
+| 1 | 0.0 s | 5.2 s | title | particles | Warum werden die Reichen immer reicher? Nicht durch Zufall. Sondern durch ein System. |
+| 2 | 5.2 s | 13.0 s | bars | grid | Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens. Die ärmere Hälfte der Menschheit: zwei Prozent. |
+| 3 | 18.2 s | 9.5 s | compare | beams | Der erste Grund: Vermögen arbeitet mit. Wer arbeitet, tauscht Zeit gegen Geld. Wer Aktien oder Immobilien besitzt, erhält Erträge – und kann sie wieder anlegen. |
+| 4 | 27.7 s | 12.1 s | growth | plain | Der zweite Grund: der Zinseszins. Ein Rechenbeispiel: fünf Prozent Rendite pro Jahr. Aus 10.000 Euro werden in dreißig Jahren rund 43.000. Aus einer Million: über vier Millionen. |
+| 5 | 39.9 s | 10.4 s | formula | rings | Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g. Kapital wuchs demnach meist schneller als die Wirtschaft. Die These ist unter Ökonomen umstritten. |
+| 6 | 50.2 s | 6.3 s | outro | skyline | Vermögen kann sich selbst vermehren. Arbeitszeit nicht. Das ist kein Zufall. Das ist das System. |
 
 ## Fakten und Quellen
 
@@ -63,7 +63,7 @@
 
 ## Verwendete Assets und Lizenzen
 
-- Stimme: Piper TTS `de_DE-thorsten-high`, Tonhöhe -2.0 Halbtöne – CC0 (Thorsten-Voice, https://github.com/thorstenMueller/Thorsten-Voice)
+- Stimme: Piper TTS `de_DE-karlsson-low`, Tonhöhe -1.0 Halbtöne – M-AILABS Speech Dataset, BSD-artige Lizenz (https://www.caito.de/2019/01/03/the-m-ailabs-speech-dataset/)
 - Musik und Soundeffekte: von der Pipeline selbst erzeugt (prozedural), keine Fremdrechte
 - Grafiken und Animationen: von der Pipeline selbst erzeugt
 - Schriften: Playfair Display und Inter – SIL Open Font License 1.1

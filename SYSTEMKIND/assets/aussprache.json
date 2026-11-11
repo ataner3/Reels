@@ -1,0 +1,18 @@
+{
+  "_hinweis": "Aussprache-Wörterbuch. Schlüssel = Wort wie im Skript. Wert = Lautschrift in [[...]] (IPA, wie Piper/eSpeak sie schreibt) oder eine andere Schreibweise. Prüfen mit: python main.py --topic \"…\" --phonemes",
+  "Warum": "[[varˈʊm]]",
+  "Zufall": "[[tsˈuːfal]]",
+  "reichsten": "[[rˈaɪçstən]]",
+  "Weltungleichheitsbericht": "Welt-Ungleichheitsbericht",
+  "Aktien": "[[ˈaktsɪən]]",
+  "Zinseszins": "[[tsˈɪnzəstsˌɪns]]",
+  "dreiundvierzigtausend": "[[drˈaɪʊntfˌɪɾtsɪçtˌaʊzənt]]",
+  "vierzig": "[[fˈɪɾtsɪç]]",
+  "vierzehn": "[[fˈɪɾtseːn]]",
+  "Thomas": "Thomass",
+  "Piketty": "Pikettie",
+  "Kapitalrendite": "[[kapiːtˈɑːlrɛndˌiːtə]]",
+  "umstritten": "[[ʊmʃtrˈɪtən]]",
+  "wuchs": "[[vˈuːks]]",
+  "demnach": "[[dˈeːmnɑːx]]"
+}

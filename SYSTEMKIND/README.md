@@ -13,7 +13,7 @@ Voraussetzungen: Python ≥ 3.10 und FFmpeg (mit libx264).
 ```bash
 cd SYSTEMKIND
 pip install -r requirements.txt
-python main.py --setup      # lädt die freie deutsche Piper-Stimme (ca. 110 MB) und prüft die Umgebung
+python main.py --setup      # lädt die freie deutsche Piper-Stimme (ca. 60 MB) und prüft die Umgebung
 ```
 
 FFmpeg installieren: macOS `brew install ffmpeg`, Ubuntu `sudo apt install ffmpeg`,
@@ -68,6 +68,18 @@ python main.py --voice-samples     # Hörproben aller Presets nach EXPORTS/stimm
 Fehlende Stimmen werden beim ersten Gebrauch geladen. Die Aufbereitung in der
 Mischung (`VOICE_FILTER`) ist auf einen warmen, weichen Klang eingestellt.
 
+### Aussprache
+
+Piper spricht manche Wörter falsch (z. B. „reichsten“, „Aktien“, „Zufall“). Vor dem
+Rendern lässt sich das prüfen, ohne zuzuhören:
+
+```bash
+python main.py --topic "…" --phonemes    # zeigt die Lautschrift jedes Satzes
+```
+
+Korrekturen stehen in `assets/aussprache.json` und gelten für alle Videos:
+entweder Lautschrift in `[[…]]` oder eine andere Schreibweise.
+
 ## Neues Thema
 
 `python main.py --topic "Neues Thema"` legt `projects/<thema>/` mit einer
@@ -108,6 +120,7 @@ EXPORTS/                fertige Videos
 
 ## Lizenzen
 
+- Stimme `de_DE-karlsson-low` (Standard): M-AILABS Speech Dataset, BSD-artige Lizenz
 - Stimme `de_DE-thorsten-high`: CC0 (Thorsten-Voice)
 - Stimmen aus `de_DE-mls-medium`: CC BY 4.0 (Multilingual LibriSpeech) – Namensnennung nötig
 - Schriften Playfair Display und Inter: SIL Open Font License 1.1

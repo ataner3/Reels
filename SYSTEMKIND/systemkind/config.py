@@ -41,21 +41,22 @@ CAPTION_Y = 1455                 # Mittelpunkt der Untertitelzeile
 # Markenstimme für alle Videos. Ein Projekt kann einzelne Werte unter "voice"
 # überschreiben. Hörproben: python main.py --voice-samples
 VOICE = {
-    "name": "de_DE-thorsten-high",   # Piper-Stimme (wird bei --setup geladen)
+    "name": "de_DE-karlsson-low",    # Piper-Stimme (wird bei Bedarf geladen)
     "speaker": None,                 # nur bei Mehrsprecher-Modellen, z. B. de_DE-mls-medium
-    "pitch": -2.0,                   # Halbtöne; negativ = tiefer
-    "length_scale": 1.0,             # Sprechtempo; größer = langsamer
-    "noise_scale": 0.5,              # kleiner = ruhigere, gleichmäßigere Betonung
-    "noise_w": 0.7,
+    "pitch": -1.0,                   # Halbtöne; negativ = tiefer
+    "length_scale": 0.8,             # Sprechtempo; kleiner = schneller
+    "noise_scale": None,             # None = Standard der Stimme (natürliche Betonung)
+    "noise_w": None,
 }
 VOICE_PRESETS = {                    # für --voice-samples
     "A_thorsten_tief": {"name": "de_DE-thorsten-high", "pitch": -2.0, "length_scale": 1.0, "noise_scale": 0.5, "noise_w": 0.7},
     "B_hoerbuch_253": {"name": "de_DE-mls-medium", "speaker": 39, "pitch": 0.0, "length_scale": 0.92},
     "C_hoerbuch_5055": {"name": "de_DE-mls-medium", "speaker": 6, "pitch": 0.0, "length_scale": 0.9},
-    "D_karlsson": {"name": "de_DE-karlsson-low", "pitch": -1.0, "length_scale": 1.05},
+    "D_karlsson": {"name": "de_DE-karlsson-low", "pitch": -1.0, "length_scale": 0.8},
 }
 VOICE_BASE_URL = "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
 VOICE_LICENSES = {
+    "karlsson": "M-AILABS Speech Dataset, BSD-artige Lizenz (https://www.caito.de/2019/01/03/the-m-ailabs-speech-dataset/)",
     "thorsten": "CC0 (Thorsten-Voice, https://github.com/thorstenMueller/Thorsten-Voice)",
     "mls": "CC BY 4.0 (Multilingual LibriSpeech, https://www.openslr.org/94/)",
 }
@@ -63,6 +64,6 @@ VOICE_LICENSES = {
 VOICE_FILTER = ("highpass=f=60,bass=g=3:f=130:w=0.7,equalizer=f=320:t=q:w=1.2:g=-1.5,"
                 "equalizer=f=3400:t=q:w=1.2:g=-2,deesser=i=0.35,treble=g=-1.5:f=9000,"
                 "acompressor=threshold=-22dB:ratio=2.5:attack=10:release=180:makeup=2.5")
-VO_LEAD_IN, VO_GAP, VO_TAIL = 0.40, 0.26, 0.50
+VO_LEAD_IN, VO_GAP, VO_TAIL = 0.35, 0.22, 0.45
 
 TRANSITION = 0.5                 # Sekunden, mittig auf dem Schnitt
