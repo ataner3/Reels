@@ -184,7 +184,8 @@ def mix(vo_path, music_path, sfx_path, out_path, duration: float) -> dict:
         "[mus][key]sidechaincompress=threshold=0.02:ratio=5:attack=20:release=420[duck];"
         "[vo][duck][2:a]amix=inputs=3:normalize=0:duration=longest[mix]"
     )
-    base = ["ffmpeg", "-nostdin", "-y", "-v", "info", "-i", str(vo_path), "-i", str(music_path), "-i", str(sfx_path)]
+    inputs = ["-i", str(vo_path), "-i", str(music_path), "-i", str(sfx_path)]
+    base = ["ffmpeg", "-nostdin", "-y", "-v", "info"] + inputs
     ln = f"loudnorm=I={C.TARGET_LUFS}:TP=-2.0:LRA=11"
     p = subprocess.run(base + ["-filter_complex", graph + f";[mix]{ln}:print_format=json[o]",
                                "-map", "[o]", "-f", "null", "-"], capture_output=True, text=True)
@@ -194,7 +195,7 @@ def mix(vo_path, music_path, sfx_path, out_path, duration: float) -> dict:
     st = json.loads(m.group(0))
     ln2 = (f"{ln}:measured_I={st['input_i']}:measured_TP={st['input_tp']}:measured_LRA={st['input_lra']}"
            f":measured_thresh={st['input_thresh']}:offset={st['target_offset']}:linear=true")
-    subprocess.run(base[:2] + ["-v", "error"] + base[4:] + [
+    subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error"] + inputs + [
         "-filter_complex", graph + f";[mix]{ln2},alimiter=limit=0.8:level=disabled[o]", "-map", "[o]",
         "-t", f"{duration:.3f}", "-ar", str(SR), "-ac", "2", str(out_path)], check=True)
     return st

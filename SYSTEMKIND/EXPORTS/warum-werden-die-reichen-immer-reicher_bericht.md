@@ -1,6 +1,6 @@
 # Produktionsbericht – Warum werden die Reichen immer reicher?
 
-- Erstellt: 11.11.2026 16:32
+- Erstellt: 11.11.2026 16:37
 - Video: `warum-werden-die-reichen-immer-reicher.mp4`
 - Untertitel: `warum-werden-die-reichen-immer-reicher.srt`
 - Länge: 56.2 s · 6 Szenen · 131 Wörter Voice-over
@@ -52,8 +52,8 @@
   - Quelle: Eigene Berechnung (Zinseszinsformel K × (1 + p)^n)
   - Geprüft: ja · Sicherheit: hoch · Hinweis: Reines Rechenbeispiel mit angenommener Rendite – keine Prognose, ohne Steuern, Kosten und Inflation.
 - **f3** – Thomas Piketty vertritt die These r > g: Die Kapitalrendite (r) lag historisch meist über dem Wirtschaftswachstum (g), was Vermögen tendenziell konzentriert.
-  - Quelle: Thomas Piketty: Das Kapital im 21. Jahrhundert (frz. Original 2013) – https://www.hup.harvard.edu/books/9780674430006
-  - Geprüft: ja · Sicherheit: mittel · Hinweis: Als These Pikettys korrekt wiedergegeben; ihre Erklärungskraft ist in der Ökonomie umstritten.
+  - Quelle: Thomas Piketty: Das Kapital im 21. Jahrhundert (frz. Original 2013) – https://libertystreeteconomics.newyorkfed.org/2015/07/a-discussion-of-thomas-pikettys-capital-in-the-twenty-first-century-by-how-much-is-r-greater-than-g
+  - Geprüft: ja · Sicherheit: mittel · Hinweis: Als These Pikettys korrekt wiedergegeben; ihre Erklärungskraft ist in der Ökonomie umstritten (Überblick: https://bruegel.org/blog-post/piketty-theory-controversy).
 
 ## Unsicherheiten
 
