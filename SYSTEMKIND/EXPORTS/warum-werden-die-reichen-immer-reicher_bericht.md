@@ -1,0 +1,84 @@
+# Produktionsbericht – Warum werden die Reichen immer reicher?
+
+- Erstellt: 11.11.2026 16:32
+- Video: `warum-werden-die-reichen-immer-reicher.mp4`
+- Untertitel: `warum-werden-die-reichen-immer-reicher.srt`
+- Länge: 56.2 s · 6 Szenen · 131 Wörter Voice-over
+- Qualitätskontrolle: **bestanden**
+
+## Qualitätskontrolle
+
+| Prüfung | Ergebnis | Detail |
+|---|---|---|
+| Container MP4 | ✅ | mov,mp4,m4a,3gp,3g2,mj2 |
+| Video-Codec H.264 | ✅ | h264 (High) |
+| Auflösung 1080 × 1920 | ✅ | 1080 × 1920 |
+| Seitenverhältnis 9:16 | ✅ | 1080:1920 |
+| Bildrate 30 FPS | ✅ | 30/1 |
+| Pixelformat yuv420p | ✅ | yuv420p |
+| Audio-Codec AAC | ✅ | aac, 48000 Hz, 2 Kanäle |
+| Länge 30–60 s | ✅ | 56.20 s |
+| Bild und Ton gleich lang | ✅ | Abweichung 0.000 s |
+| Datei vollständig dekodierbar | ✅ | keine Fehler |
+| Keine Schwarzbilder | ✅ | keine |
+| Keine Tonlücken | ✅ | keine |
+| Lautheit -14 LUFS (±1,5) | ✅ | -14.1 LUFS |
+| True Peak ≤ −1 dBTP | ✅ | -1.8 dBTP |
+| Untertitel vorhanden | ✅ | 46 Einblendungen |
+| Untertitel ohne Überlappung | ✅ | 0 Überlappungen |
+| Untertitel innerhalb der Laufzeit | ✅ | letzte endet bei 55.90 s |
+| Untertitel-Zeilenlänge ≤ 30 Zeichen | ✅ | längste Zeile: 29 Zeichen |
+| Untertitel lang genug lesbar | ✅ | alle ≥ 0,3 s |
+| SRT-Datei vollständig | ✅ | 46 Einträge |
+| Alle Szenen haben Bildinhalt | ✅ | 6 Szenen geprüft |
+
+## Szenen
+
+| # | Start | Dauer | Typ | Hintergrund | Voice-over |
+|---|---|---|---|---|---|
+| 1 | 0.0 s | 5.5 s | title | particles | Warum werden die Reichen immer reicher? Nicht durch Zufall. Sondern durch ein System. |
+| 2 | 5.5 s | 11.2 s | bars | grid | Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens. Die ärmere Hälfte der Menschheit: zwei Prozent. |
+| 3 | 16.7 s | 10.4 s | compare | beams | Der erste Grund: Vermögen arbeitet mit. Wer arbeitet, tauscht Zeit gegen Geld. Wer Aktien, Immobilien oder Firmen besitzt, erhält Erträge – und kann sie wieder anlegen. |
+| 4 | 27.1 s | 12.2 s | growth | plain | Der zweite Grund: der Zinseszins. Ein Rechenbeispiel mit fünf Prozent Rendite pro Jahr. Aus 10.000 Euro werden in dreißig Jahren rund 43.000. Aus einer Million: über vier Millionen. |
+| 5 | 39.3 s | 10.8 s | formula | rings | Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g. Laut Piketty lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum. Die These ist unter Ökonomen umstritten. |
+| 6 | 50.1 s | 6.1 s | outro | skyline | Vermögen kann sich selbst vermehren. Arbeitszeit nicht. Das ist kein Zufall. Das ist das System. |
+
+## Fakten und Quellen
+
+- **f1** – Die reichsten 10 % der Weltbevölkerung besitzen rund 76 % des globalen Vermögens, die mittleren 40 % rund 22 %, die ärmere Hälfte rund 2 % (Daten für 2021).
+  - Quelle: World Inequality Lab: World Inequality Report 2022, Executive Summary – https://wir2022.wid.world/www-site/uploads/2022/01/Summary_WorldInequalityReport2022_English.pdf
+  - Geprüft: ja · Sicherheit: hoch · Hinweis: Schätzwerte des World Inequality Lab; Vermögensdaten sind weltweit lückenhaft.
+- **f2** – Bei 5 % Rendite pro Jahr wächst ein Betrag in 30 Jahren auf das 4,32-Fache (1,05^30 = 4,3219): aus 10.000 € werden 43.219 €, aus 1.000.000 € werden 4.321.942 €.
+  - Quelle: Eigene Berechnung (Zinseszinsformel K × (1 + p)^n)
+  - Geprüft: ja · Sicherheit: hoch · Hinweis: Reines Rechenbeispiel mit angenommener Rendite – keine Prognose, ohne Steuern, Kosten und Inflation.
+- **f3** – Thomas Piketty vertritt die These r > g: Die Kapitalrendite (r) lag historisch meist über dem Wirtschaftswachstum (g), was Vermögen tendenziell konzentriert.
+  - Quelle: Thomas Piketty: Das Kapital im 21. Jahrhundert (frz. Original 2013) – https://www.hup.harvard.edu/books/9780674430006
+  - Geprüft: ja · Sicherheit: mittel · Hinweis: Als These Pikettys korrekt wiedergegeben; ihre Erklärungskraft ist in der Ökonomie umstritten.
+
+## Unsicherheiten
+
+- r > g ist eine These, kein Naturgesetz – im Video ausdrücklich als umstritten gekennzeichnet.
+- Die Vermögensanteile sind Schätzungen; je nach Datenquelle weichen die Werte leicht ab.
+- Das Zinseszins-Beispiel nutzt eine angenommene Rendite von 5 % und ist keine Anlageempfehlung.
+
+## Verwendete Assets und Lizenzen
+
+- Stimme: Piper TTS `de_DE-thorsten-high` – CC0 (Thorsten-Voice, https://github.com/thorstenMueller/Thorsten-Voice)
+- Musik und Soundeffekte: von der Pipeline selbst erzeugt (prozedural), keine Fremdrechte
+- Grafiken und Animationen: von der Pipeline selbst erzeugt
+- Schriften: Playfair Display und Inter – SIL Open Font License 1.1
+- B-Roll: keine Fremdaufnahmen verwendet
+
+## Fehlende Assets
+
+- keine
+
+## Hinweise
+
+- Unsicherheit: r > g ist eine These, kein Naturgesetz – im Video ausdrücklich als umstritten gekennzeichnet.
+- Unsicherheit: Die Vermögensanteile sind Schätzungen; je nach Datenquelle weichen die Werte leicht ab.
+- Unsicherheit: Das Zinseszins-Beispiel nutzt eine angenommene Rendite von 5 % und ist keine Anlageempfehlung.
+
+## Veröffentlichung
+
+Das Video wurde **nicht** veröffentlicht. Ein Upload erfolgt nur manuell nach deiner Freigabe.

@@ -1,0 +1,3 @@
+Pillow>=10
+numpy>=1.26
+piper-tts[alignment]>=1.3

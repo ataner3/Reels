@@ -1,0 +1,180 @@
+{
+  "topic": "Warum werden die Reichen immer reicher?",
+  "status": "approved",
+  "voice": {"length_scale": 0.95},
+  "music": {"seed": 3},
+  "research": {
+    "facts": [
+      {
+        "id": "f1",
+        "claim": "Die reichsten 10 % der Weltbevölkerung besitzen rund 76 % des globalen Vermögens, die mittleren 40 % rund 22 %, die ärmere Hälfte rund 2 % (Daten für 2021).",
+        "source": "World Inequality Lab: World Inequality Report 2022, Executive Summary",
+        "url": "https://wir2022.wid.world/www-site/uploads/2022/01/Summary_WorldInequalityReport2022_English.pdf",
+        "verified": true,
+        "confidence": "hoch",
+        "note": "Schätzwerte des World Inequality Lab; Vermögensdaten sind weltweit lückenhaft."
+      },
+      {
+        "id": "f2",
+        "kind": "calculation",
+        "claim": "Bei 5 % Rendite pro Jahr wächst ein Betrag in 30 Jahren auf das 4,32-Fache (1,05^30 = 4,3219): aus 10.000 € werden 43.219 €, aus 1.000.000 € werden 4.321.942 €.",
+        "source": "Eigene Berechnung (Zinseszinsformel K × (1 + p)^n)",
+        "url": "",
+        "verified": true,
+        "confidence": "hoch",
+        "note": "Reines Rechenbeispiel mit angenommener Rendite – keine Prognose, ohne Steuern, Kosten und Inflation."
+      },
+      {
+        "id": "f3",
+        "claim": "Thomas Piketty vertritt die These r > g: Die Kapitalrendite (r) lag historisch meist über dem Wirtschaftswachstum (g), was Vermögen tendenziell konzentriert.",
+        "source": "Thomas Piketty: Das Kapital im 21. Jahrhundert (frz. Original 2013)",
+        "url": "https://libertystreeteconomics.newyorkfed.org/2015/07/a-discussion-of-thomas-pikettys-capital-in-the-twenty-first-century-by-how-much-is-r-greater-than-g",
+        "verified": true,
+        "confidence": "mittel",
+        "note": "Als These Pikettys korrekt wiedergegeben; ihre Erklärungskraft ist in der Ökonomie umstritten (Überblick: https://bruegel.org/blog-post/piketty-theory-controversy)."
+      }
+    ],
+    "uncertainties": [
+      "r > g ist eine These, kein Naturgesetz – im Video ausdrücklich als umstritten gekennzeichnet.",
+      "Die Vermögensanteile sind Schätzungen; je nach Datenquelle weichen die Werte leicht ab.",
+      "Das Zinseszins-Beispiel nutzt eine angenommene Rendite von 5 % und ist keine Anlageempfehlung."
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "title",
+      "background": "particles",
+      "transition": "fade",
+      "vo": [
+        {"text": "Warum werden die Reichen immer reicher?"},
+        {"text": "Nicht durch Zufall."},
+        {"text": "Sondern durch ein System."}
+      ],
+      "params": {
+        "kicker": "SYSTEMKIND",
+        "lines": ["Warum werden", "die *Reichen*", "immer *reicher?*"],
+        "sub": ["Kein Zufall.", "Ein *System.*"],
+        "sub_beat": 1
+      }
+    },
+    {
+      "id": "verteilung",
+      "type": "bars",
+      "background": "grid",
+      "transition": "sweep",
+      "facts": ["f1"],
+      "vo": [
+        {"text": "Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens.",
+         "say": "Laut Weltungleichheitsbericht zweitausendzweiundzwanzig besitzen die reichsten zehn Prozent rund sechsundsiebzig Prozent des weltweiten Vermögens."},
+        {"text": "Die ärmere Hälfte der Menschheit: zwei Prozent."}
+      ],
+      "params": {
+        "kicker": "Die Ausgangslage",
+        "title": ["Wem gehört das", "*Vermögen* der Welt?"],
+        "unit": "%",
+        "max": 80,
+        "items": [
+          {"label": "Reichste 10 %", "value": 76, "highlight": true, "beat": "76", "delay": -0.1},
+          {"label": "Mittlere 40 %", "value": 22, "beat": "76", "delay": 1.5},
+          {"label": "Ärmere 50 %", "value": 2, "beat": "zwei", "delay": -0.1}
+        ],
+        "source": "Quelle: World Inequality Report 2022 (Daten für 2021)"
+      }
+    },
+    {
+      "id": "arbeit-kapital",
+      "type": "compare",
+      "background": "beams",
+      "transition": "push",
+      "vo": [
+        {"text": "Der erste Grund: Vermögen arbeitet mit."},
+        {"text": "Wer arbeitet, tauscht Zeit gegen Geld."},
+        {"text": "Wer Aktien, Immobilien oder Firmen besitzt, erhält Erträge – und kann sie wieder anlegen."}
+      ],
+      "params": {
+        "kicker": "Grund 1",
+        "title": ["Zwei Wege zu", "*Einkommen*"],
+        "cards": [
+          {"head": "Arbeit", "flow": ["Zeit", "Lohn"], "note": "Begrenzt durch die eigene Zeit.", "beat": "arbeitet,"},
+          {"head": "Kapital", "flow": ["Geld", "Ertrag"], "note": "Erträge lassen sich wieder anlegen.", "beat": 2, "highlight": true, "loop": true}
+        ]
+      }
+    },
+    {
+      "id": "zinseszins",
+      "type": "growth",
+      "background": "plain",
+      "transition": "sweep",
+      "facts": ["f2"],
+      "vo": [
+        {"text": "Der zweite Grund: der Zinseszins."},
+        {"text": "Ein Rechenbeispiel mit fünf Prozent Rendite pro Jahr."},
+        {"text": "Aus 10.000 Euro werden in dreißig Jahren rund 43.000.",
+         "say": "Aus zehntausend Euro werden in dreißig Jahren rund dreiundvierzigtausend."},
+        {"text": "Aus einer Million: über vier Millionen."}
+      ],
+      "params": {
+        "kicker": "Grund 2",
+        "title": ["Gleiche Rendite,", "*anderer Abstand*"],
+        "rate": 0.05,
+        "years": 30,
+        "principals": [
+          {"label": "Start: 10.000 €", "value": 10000},
+          {"label": "Start: 1 Mio. €", "value": 1000000}
+        ],
+        "start_beat": "Aus",
+        "end_beat": 3,
+        "end_offset": 1.4,
+        "footnote": "Rechenbeispiel, keine Prognose – ohne Steuern, Kosten, Inflation."
+      }
+    },
+    {
+      "id": "formel",
+      "type": "formula",
+      "background": "rings",
+      "transition": "dip",
+      "facts": ["f3"],
+      "vo": [
+        {"text": "Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g.",
+         "say": "Der Ökonom Thomas Piketti fasst das in eine Formel: Err größer Geh."},
+        {"text": "Laut Piketty lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum.",
+         "say": "Laut Piketti lag die Kapitalrendite historisch meist über dem Wirtschaftswachstum."},
+        {"text": "Die These ist unter Ökonomen umstritten."}
+      ],
+      "params": {
+        "kicker": "Die Formel",
+        "formula": ["r", ">", "g"],
+        "formula_beat": "r",
+        "formula_delay": -0.15,
+        "legend": [["r", "Rendite auf Kapital"], ["g", "Wachstum der Wirtschaft"]],
+        "legend_beat": 1,
+        "note": "These – unter Ökonomen umstritten",
+        "note_beat": 2,
+        "source": "Thomas Piketty: Das Kapital im 21. Jahrhundert (2013)"
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "background": "skyline",
+      "transition": "fade",
+      "vo": [
+        {"text": "Vermögen kann sich selbst vermehren."},
+        {"text": "Arbeitszeit nicht."},
+        {"text": "Das ist kein Zufall. Das ist das System."}
+      ],
+      "params": {
+        "lines": ["Vermögen vermehrt sich.", "*Arbeitszeit nicht.*"],
+        "line_beats": [0, 1],
+        "brand_beat": 2,
+        "tagline": "Verstehe das System.",
+        "sources": [
+          "World Inequality Report 2022 · wir2022.wid.world",
+          "Thomas Piketty: Das Kapital im 21. Jahrhundert",
+          "Zinseszins: eigene Berechnung, 1,05^30 = 4,32"
+        ]
+      }
+    }
+  ]
+}
