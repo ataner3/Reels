@@ -91,7 +91,6 @@ def validate(proj: dict) -> tuple[list[str], list[str]]:
 TEMPLATE = {
     "topic": "",
     "status": "draft",
-    "voice": {"length_scale": 1.0},
     "music": {"seed": 3},
     "research": {
         "facts": [{"id": "f1", "claim": "TODO: überprüfbare Aussage", "source": "TODO: Herausgeber, Titel, Jahr",

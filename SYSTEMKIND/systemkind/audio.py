@@ -150,7 +150,7 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
 def sfx_track(events, duration: float) -> np.ndarray:
     n = int(duration * SR)
     out = np.zeros((n, 2), np.float32)
-    level = {"hit": 0.55, "tick": 0.32, "whoosh": 0.42, "riser": 0.2, "shimmer": 0.6}
+    level = {"hit": 0.42, "tick": 0.2, "whoosh": 0.3, "riser": 0.12, "shimmer": 0.5}
     cache = {}
     for i, (t, kind, gain) in enumerate(events):
         if kind not in cache:
@@ -177,10 +177,9 @@ def mix(vo_path, music_path, sfx_path, out_path, duration: float) -> dict:
     """Stimme aufbereiten, Musik unter der Stimme absenken (Sidechain),
     alles mischen und in zwei Durchgängen auf Ziel-Lautheit normalisieren."""
     graph = (
-        "[0:a]highpass=f=70,equalizer=f=220:t=q:w=1.2:g=-2,equalizer=f=4200:t=q:w=1.0:g=2,"
-        "acompressor=threshold=-21dB:ratio=3:attack=6:release=140:makeup=2.5,"
+        f"[0:a]{C.VOICE_FILTER},"
         "aformat=channel_layouts=stereo,asplit=2[vo][key];"
-        "[1:a]volume=0.62[mus];"
+        "[1:a]volume=0.5[mus];"
         "[mus][key]sidechaincompress=threshold=0.02:ratio=5:attack=20:release=420[duck];"
         "[vo][duck][2:a]amix=inputs=3:normalize=0:duration=longest[mix]"
     )

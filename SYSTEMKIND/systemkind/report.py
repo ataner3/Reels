@@ -4,10 +4,12 @@ from __future__ import annotations
 import datetime
 
 from . import config as C
+from . import tts
 
 
 def write(path, proj, tl, checks, used_broll, missing, warnings, files, loud=None):
     ok = all(c["ok"] for c in checks)
+    vs = tts.settings(proj)
     words = sum(len(s["text"].split()) for sc in tl["scenes"] for s in sc["sentences"])
     L = [f"# Produktionsbericht – {proj['topic']}", "",
          f"- Erstellt: {datetime.datetime.now():%d.%m.%Y %H:%M}",
@@ -32,7 +34,8 @@ def write(path, proj, tl, checks, used_broll, missing, warnings, files, loud=Non
     if unc:
         L += ["", "## Unsicherheiten", ""] + [f"- {u}" for u in unc]
     L += ["", "## Verwendete Assets und Lizenzen", "",
-          f"- Stimme: Piper TTS `{C.VOICE}` – {C.VOICE_LICENSE}",
+          f"- Stimme: Piper TTS `{vs['name']}`" + (f", Sprecher {vs['speaker']}" if vs.get("speaker") is not None else "")
+          + f", Tonhöhe {vs.get('pitch') or 0:+.1f} Halbtöne – {tts.voice_license(vs['name'])}",
           "- Musik und Soundeffekte: von der Pipeline selbst erzeugt (prozedural), keine Fremdrechte",
           "- Grafiken und Animationen: von der Pipeline selbst erzeugt",
           "- Schriften: Playfair Display und Inter – SIL Open Font License 1.1"]

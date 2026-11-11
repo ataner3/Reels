@@ -8,7 +8,7 @@
 |---|---|
 | `topic` | Thema, wie bei `--topic` angegeben |
 | `status` | `draft` (Review nötig) oder `approved` |
-| `voice.length_scale` | Sprechtempo: 1.0 normal, 0.95 etwas schneller |
+| `voice` | optional, überschreibt die Markenstimme: `name`, `speaker`, `pitch`, `length_scale` |
 | `music.seed` | Variante der Musik |
 
 ## Recherche

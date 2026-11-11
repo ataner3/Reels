@@ -11,39 +11,53 @@ import numpy as np
 
 from . import config as C
 
-_voice = None
+_voices = {}
 CACHE = C.BUILD / "_tts_cache"
 
 
-def voice_files():
-    return C.VOICES / f"{C.VOICE}.onnx", C.VOICES / f"{C.VOICE}.onnx.json"
+def settings(project: dict | None = None) -> dict:
+    """Markenstimme aus der Konfiguration, ergänzt um Projektwerte."""
+    return {**C.VOICE, **((project or {}).get("voice") or {})}
 
 
-def voice_available():
-    return all(p.exists() and p.stat().st_size > 1000 for p in voice_files())
+def voice_files(name=None):
+    name = name or C.VOICE["name"]
+    return C.VOICES / f"{name}.onnx", C.VOICES / f"{name}.onnx.json"
 
 
-def download_voice():
-    """Lädt die freie Piper-Stimme (CC0) einmalig herunter."""
+def voice_available(name=None):
+    return all(p.exists() and p.stat().st_size > 1000 for p in voice_files(name))
+
+
+def voice_license(name=None):
+    name = name or C.VOICE["name"]
+    return next((v for k, v in C.VOICE_LICENSES.items() if f"-{k}" in name),
+                "siehe MODEL_CARD der Stimme unter huggingface.co/rhasspy/piper-voices")
+
+
+def download_voice(name=None):
+    """Lädt eine freie Piper-Stimme einmalig herunter (Name: sprache-sprecher-qualität)."""
+    name = name or C.VOICE["name"]
+    lang, speaker, quality = name.split("-")
+    url = f"{C.VOICE_BASE_URL}{lang.split('_')[0]}/{lang}/{speaker}/{quality}/"
     C.VOICES.mkdir(parents=True, exist_ok=True)
-    for path in voice_files():
+    for path in voice_files(name):
         if path.exists() and path.stat().st_size > 1000:
             continue
         print(f"  Lade {path.name} …")
-        urllib.request.urlretrieve(C.VOICE_URL + path.name, path)
+        urllib.request.urlretrieve(url + path.name, path)
 
 
-def _load():
-    global _voice
-    if _voice is None:
+def _load(name):
+    if name not in _voices:
         from piper import PiperVoice
-        model, cfg = voice_files()
+        model, cfg = voice_files(name)
         try:    # Wortgenaue Zeiten brauchen das Paket "onnx" (piper-tts[alignment])
             import onnx  # noqa: F401
-            _voice = PiperVoice.load(str(model), config_path=str(cfg), include_alignments=True)
+            _voices[name] = PiperVoice.load(str(model), config_path=str(cfg), include_alignments=True)
         except Exception:
-            _voice = PiperVoice.load(str(model), config_path=str(cfg))
-    return _voice
+            _voices[name] = PiperVoice.load(str(model), config_path=str(cfg))
+    return _voices[name]
 
 
 def _word_times(alignments, sr):
@@ -63,23 +77,32 @@ def _word_times(alignments, sr):
     return words
 
 
-def synth(text: str, length_scale: float = 1.0):
+def synth(text: str, vs: dict | None = None):
     """Text -> (Mono float32 bei C.AUDIO_SR, Wortzeiten oder None).
-    Wortzeiten: [[start, ende], ...] in Sekunden, ein Eintrag je gesprochenem Wort."""
+    vs = Stimm-Einstellungen (siehe config.VOICE). Wortzeiten: [[start, ende], ...]
+    in Sekunden, ein Eintrag je gesprochenem Wort."""
+    vs = {**C.VOICE, **(vs or {})}
     CACHE.mkdir(parents=True, exist_ok=True)
-    key = hashlib.sha1(f"{C.VOICE}|{length_scale}|{text}".encode()).hexdigest()[:20]
+    ident = [vs["name"], vs.get("speaker"), vs.get("length_scale"), vs.get("noise_scale"), vs.get("noise_w"), text]
+    key = hashlib.sha1(json.dumps(ident).encode()).hexdigest()[:20]
     raw, meta = CACHE / f"{key}.wav", CACHE / f"{key}.json"
     if not (raw.exists() and meta.exists()):
         from piper import SynthesisConfig
+        cfg = SynthesisConfig(speaker_id=vs.get("speaker"), length_scale=vs.get("length_scale"),
+                              noise_scale=vs.get("noise_scale"), noise_w_scale=vs.get("noise_w"))
         tmp = raw.with_suffix(".tmp.wav")
         with wave.open(str(tmp), "wb") as wf:
-            al = _load().synthesize_wav(text, wf, syn_config=SynthesisConfig(length_scale=length_scale),
-                                        include_alignments=True)
+            al = _load(vs["name"]).synthesize_wav(text, wf, syn_config=cfg, include_alignments=True)
             sr = wf.getframerate()
         tmp.rename(raw)
-        meta.write_text(json.dumps(_word_times(al, sr)))
+        meta.write_text(json.dumps({"sr": sr, "words": _word_times(al, sr)}))
+    info = json.loads(meta.read_text())
+    # Tonhöhe: Abspielrate ändern und das Tempo wieder ausgleichen – die Stimme
+    # klingt tiefer und voller, die Wortzeiten bleiben gleich.
+    f = 2 ** (float(vs.get("pitch") or 0) / 12)
+    af = f"asetrate={info['sr'] * f:.0f},aresample={C.AUDIO_SR},atempo={1 / f:.5f}" if abs(f - 1) > 1e-3 else "anull"
     out = subprocess.run(
-        ["ffmpeg", "-nostdin", "-v", "error", "-i", str(raw), "-ac", "1", "-ar", str(C.AUDIO_SR),
+        ["ffmpeg", "-nostdin", "-v", "error", "-i", str(raw), "-af", af, "-ac", "1", "-ar", str(C.AUDIO_SR),
          "-f", "f32le", "-"], capture_output=True, check=True).stdout
     x = np.frombuffer(out, np.float32).copy()
     idx = np.flatnonzero(np.abs(x) > 0.012)     # Stille am Rand entfernen
@@ -87,5 +110,25 @@ def synth(text: str, length_scale: float = 1.0):
     off = a / C.AUDIO_SR
     x = x[a:b]
     dur = len(x) / C.AUDIO_SR
-    words = [[min(max(s - off, 0), dur), min(max(e - off, 0), dur)] for s, e in json.loads(meta.read_text())]
+    words = [[min(max(s - off, 0), dur), min(max(e - off, 0), dur)] for s, e in info["words"]]
     return x, (words or None)
+
+
+SAMPLE_TEXT = ("Warum werden die Reichen immer reicher? Nicht durch Zufall. Sondern durch ein System. "
+               "Wer arbeitet, tauscht Zeit gegen Geld. Wer Vermögen besitzt, erhält Erträge – und kann sie wieder anlegen.")
+
+
+def samples(out_dir):
+    """Hörproben aller Presets mit derselben Aufbereitung wie im Video."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    made = []
+    for label, vs in C.VOICE_PRESETS.items():
+        if not voice_available(vs["name"]):
+            download_voice(vs["name"])
+        x, _ = synth(SAMPLE_TEXT, vs)
+        path = out_dir / f"stimme_{label}.mp3"
+        subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-f", "f32le", "-ar", str(C.AUDIO_SR), "-ac", "1",
+                        "-i", "-", "-af", C.VOICE_FILTER + ",loudnorm=I=-16:TP=-2", "-b:a", "160k", str(path)],
+                       input=x.tobytes(), check=True)
+        made.append((label, vs, path))
+    return made

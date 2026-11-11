@@ -40,6 +40,7 @@ Ergebnis in `EXPORTS/`:
 | `python main.py --topic "…" --approve` | Entwurf ohne Rückfrage freigeben und rendern. |
 | `python main.py --check` | Hardware und Software prüfen. |
 | `python main.py --list` | Projekte anzeigen. |
+| `python main.py --voice-samples` | Hörproben der Stimm-Presets erzeugen. |
 | `python main.py --assets` | B-Roll-Bibliothek anzeigen. |
 | `python main.py --add-asset clip.mp4 --tags stadt,nacht --source Pexels --url <Link> --license "Pexels License" --author <Name>` | Clip mit Quelle und Lizenz aufnehmen. |
 
@@ -53,6 +54,19 @@ Ergebnis in `EXPORTS/`:
 | D Audio | Piper spricht das Voice-over. Musik und Soundeffekte werden erzeugt, die Musik weicht der Stimme aus, die Mischung wird auf −14 LUFS normalisiert. |
 | E Video | Pillow zeichnet jedes Bild, FFmpeg kodiert. Untertitel laufen wortgenau mit der Stimme. |
 | F Quality Control | 21 Prüfungen: Format, Länge, Schwarzbilder, Tonlücken, Lautheit, Untertitel, leere Szenen. |
+
+## Stimme
+
+Die Markenstimme steht in `systemkind/config.py` unter `VOICE`: Piper-Modell,
+Sprecher, Tonhöhe in Halbtönen (`pitch`, negativ = tiefer), Tempo (`length_scale`).
+Ein Projekt kann einzelne Werte unter `"voice"` überschreiben.
+
+```bash
+python main.py --voice-samples     # Hörproben aller Presets nach EXPORTS/stimmproben/
+```
+
+Fehlende Stimmen werden beim ersten Gebrauch geladen. Die Aufbereitung in der
+Mischung (`VOICE_FILTER`) ist auf einen warmen, weichen Klang eingestellt.
 
 ## Neues Thema
 
@@ -95,4 +109,5 @@ EXPORTS/                fertige Videos
 ## Lizenzen
 
 - Stimme `de_DE-thorsten-high`: CC0 (Thorsten-Voice)
+- Stimmen aus `de_DE-mls-medium`: CC BY 4.0 (Multilingual LibriSpeech) – Namensnennung nötig
 - Schriften Playfair Display und Inter: SIL Open Font License 1.1

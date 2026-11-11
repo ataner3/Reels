@@ -13,14 +13,14 @@ from . import scenes, tts
 def build(project: dict, log=print) -> tuple[dict, np.ndarray]:
     """Gibt (timeline, voice_over_audio) zurück."""
     sr = C.AUDIO_SR
-    scale = project.get("voice", {}).get("length_scale", 1.0)
+    vs = tts.settings(project)
     out, vo_parts, cues, sfx = [], [], [], []
     cursor = 0.0
     for i, sc in enumerate(project["scenes"]):
         t = C.VO_LEAD_IN
         beats, sents, wtimes = [], [], []
         for s in sc.get("vo", []):
-            audio, words = tts.synth(s.get("say") or s["text"], scale)
+            audio, words = tts.synth(s.get("say") or s["text"], vs)
             dur = len(audio) / sr
             beats.append(t)
             sents.append({"text": s["text"], "start": cursor + t, "dur": dur})

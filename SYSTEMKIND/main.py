@@ -40,7 +40,7 @@ def check_environment(verbose=True) -> bool:
         except ImportError:
             row(f"Python-Paket {mod}", False, "pip install -r requirements.txt")
     from systemkind import tts
-    row("Piper-Stimme", tts.voice_available(), C.VOICE + ("" if tts.voice_available() else " – python main.py --setup"))
+    row("Piper-Stimme", tts.voice_available(), C.VOICE["name"] + ("" if tts.voice_available() else " – python main.py --setup"))
     row("Schriften", C.SERIF.exists() and (C.SANS_DIR / C.SANS[400]).exists(), "Playfair Display, Inter")
     try:
         from PIL import features
@@ -82,9 +82,10 @@ def produce(topic: str, review: bool, approve: bool) -> int:
                 print(f"  ✗ {e}")
             return 2
 
-        if not tts.voice_available():
-            print("Piper-Stimme fehlt. Bitte zuerst: python main.py --setup")
-            return 2
+        vname = tts.settings(proj)["name"]
+        if not tts.voice_available(vname):
+            print(f"  Lade Stimme {vname} …")
+            tts.download_voice(vname)
         work = C.BUILD / proj["slug"]
         work.mkdir(parents=True, exist_ok=True)
 
@@ -162,6 +163,7 @@ def main():
     ap.add_argument("--check", action="store_true", help="Hardware und Software prüfen")
     ap.add_argument("--setup", action="store_true", help="Piper-Stimme herunterladen und Umgebung prüfen")
     ap.add_argument("--list", action="store_true", help="Projekte anzeigen")
+    ap.add_argument("--voice-samples", action="store_true", help="Hörproben der Stimm-Presets erzeugen")
     ap.add_argument("--assets", action="store_true", help="B-Roll-Bibliothek anzeigen")
     ap.add_argument("--add-asset", metavar="DATEI", help="Clip in die B-Roll-Bibliothek aufnehmen")
     ap.add_argument("--tags", default="", help="Schlagworte, kommagetrennt")
@@ -177,6 +179,12 @@ def main():
         tts.download_voice()
         print("Umgebung:")
         return 0 if check_environment() else 1
+    if a.voice_samples:
+        from systemkind import tts
+        for label, vs, path in tts.samples(C.EXPORTS / "stimmproben"):
+            print(f"  {label}: {path}")
+        print("Stimme festlegen: VOICE in systemkind/config.py (oder \"voice\" im Projekt).")
+        return 0
     if a.check:
         return 0 if check_environment() else 1
     if a.add_asset:
