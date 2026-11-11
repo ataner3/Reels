@@ -51,8 +51,8 @@ VOICE = {
 }
 # ElevenLabs – gilt, wenn provider "elevenlabs" ist (python main.py --voice elevenlabs).
 ELEVENLABS = {
-    "voice_id": "CwhRBWXzGAHq8TQ4Fs17",     # Roger – Laid-Back, Casual, Resonant
-    "voice_name": "Roger",
+    "voice_id": "6IEvIqBOPOMUc5HwR9sQ",     # Lenny – Casual Creator (deutsche Stimme)
+    "voice_name": "Lenny",
     "model_id": "eleven_multilingual_v2",    # spricht Deutsch
     "stability": 0.5,                        # höher = gleichmäßiger, niedriger = lebendiger
     "similarity_boost": 0.75,

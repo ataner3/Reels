@@ -71,7 +71,7 @@ Mischung (`VOICE_FILTER`) ist auf einen warmen, weichen Klang eingestellt.
 
 ### ElevenLabs (optional)
 
-Neben Piper kann ElevenLabs sprechen – eingestellt ist die Stimme „Roger“
+Neben Piper kann ElevenLabs sprechen – eingestellt ist die Stimme „Lenny – Casual Creator“
 (`ELEVENLABS` in `systemkind/config.py`). Piper bleibt der Standard.
 
 ```bash
