@@ -31,6 +31,9 @@ def beat(sc, i, default):
     """Zeitpunkt in der Szene: i = Nummer des Voice-over-Satzes (0, 1, …) oder
     ein gesprochenes Wort (z. B. "76") – dann der Moment, in dem es fällt."""
     if isinstance(i, str):
+        for w, t in sc.get("word_times", []):      # exakt, mit Satzzeichen ("arbeitet,")
+            if w == i:
+                return t
         clean = [(w.strip(".,:;?!–\"'"), t) for w, t in sc.get("word_times", [])]
         for w, t in clean:
             if w == i:

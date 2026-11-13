@@ -33,14 +33,20 @@ def check_environment(verbose=True) -> bool:
     if shutil.which("ffmpeg"):
         enc = subprocess.run(["ffmpeg", "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
         row("FFmpeg: libx264 + aac", "libx264" in enc and " aac " in enc, "H.264- und AAC-Encoder")
+    from systemkind import tts
+    need_piper = not tts.is_elevenlabs(tts.settings())     # mit ElevenLabs ist Piper nicht nötig
     for mod in ("PIL", "numpy", "piper"):
         try:
             m = __import__(mod)
             row(f"Python-Paket {mod}", True, getattr(m, "__version__", "installiert"))
         except ImportError:
-            row(f"Python-Paket {mod}", False, "pip install -r requirements.txt")
-    from systemkind import tts
-    row("Piper-Stimme", tts.voice_available(), C.VOICE["name"] + ("" if tts.voice_available() else " – python main.py --setup"))
+            row(f"Python-Paket {mod}", False, "pip install -r requirements.txt", required=mod != "piper" or need_piper)
+    row("Piper-Stimme", tts.voice_available(), C.VOICE["name"] + ("" if tts.voice_available() else " – python main.py --setup"),
+        required=need_piper)
+    if not need_piper:
+        from systemkind import elevenlabs
+        row("ElevenLabs-Schlüssel", bool(elevenlabs.api_key()), "ELEVENLABS_API_KEY oder .env" if elevenlabs.api_key()
+            else "fehlt – python main.py --elevenlabs-setup (nur für neue Sätze nötig)", required=False)
     row("Schriften", C.SERIF.exists() and (C.SANS_DIR / C.SANS[400]).exists(), "Playfair Display, Inter")
     try:
         from PIL import features
@@ -121,7 +127,7 @@ def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
 
 
 def produce(topic: str, review: bool, approve: bool, confirm_paid: bool = False) -> int:
-    from systemkind import assets, audio, project, qc, render, report, timeline, tts
+    from systemkind import assets, audio, elevenlabs, project, qc, render, report, timeline, tts
     from systemkind import review as review_mod
 
     t0 = time.time()
@@ -158,12 +164,23 @@ def produce(topic: str, review: bool, approve: bool, confirm_paid: bool = False)
         work.mkdir(parents=True, exist_ok=True)
 
         print("\n[B] SCRIPT + [D] AUDIO – Voice-over erzeugen, Szenen timen")
-        tl, vo = timeline.build(proj)
+        try:
+            tl, vo = timeline.build(proj)
+        except elevenlabs.ElevenLabsError as e:
+            texts = [tts.text_for(s, vs) for sc in proj["scenes"] for s in sc.get("vo", [])]
+            done = sum(elevenlabs.cached(t, vs.get("elevenlabs")) for t in texts)
+            print(f"  ✗ ElevenLabs-Fehler – abgebrochen, es wird nichts gerendert.\n    {e}")
+            print(f"    Bereits erzeugt und im Cache: {done} von {len(texts)} Sätzen. "
+                  "Ein neuer Lauf erzeugt nur die fehlenden.")
+            return 2
         print(f"  Gesamtlänge: {tl['duration']:.1f} s")
         audio.write_wav(work / "vo.wav", vo)
+        for w in timeline.check_beats(tl):
+            print(f"  Hinweis: {w}")
+            warnings.append(w)
         if not C.MIN_DURATION <= tl["duration"] <= C.MAX_DURATION:
             print(f"  ✗ Länge außerhalb von {C.MIN_DURATION:.0f}–{C.MAX_DURATION:.0f} s. Skript kürzen oder "
-                  "erweitern (oder voice.length_scale anpassen).")
+                  "erweitern oder das Sprechtempo anpassen (Piper: length_scale, ElevenLabs: speed).")
             return 2
 
         print("\n[C] ASSETS – B-Roll zuordnen")
@@ -191,26 +208,31 @@ def produce(topic: str, review: bool, approve: bool, confirm_paid: bool = False)
     print("\n[D] AUDIO – Musik, Soundeffekte, Mischung")
     audio.write_wav(work / "music.wav", audio.music(tl["duration"], proj.get("music", {}).get("seed", 3)))
     audio.write_wav(work / "sfx.wav", audio.sfx_track(tl["sfx"], tl["duration"]))
-    audio.mix(work / "vo.wav", work / "music.wav", work / "sfx.wav", work / "mix.wav", tl["duration"],
-              tts.voice_filter(tts.settings(proj)))
-    print(f"  {len(tl['sfx'])} Soundeffekte, Ziel-Lautheit {C.TARGET_LUFS:.0f} LUFS")
+    gain = audio.vo_gain_db(vo)
+    mixed = audio.mix(work / "vo.wav", work / "music.wav", work / "sfx.wav", work / "mix.wav", tl["duration"],
+                      tts.voice_filter(tts.settings(proj)), gain)
+    if gain:
+        print(f"  Stimme um {gain + mixed['vo_trim_db']:+.1f} dB an den Referenzpegel angeglichen")
+    print(f"  {len(tl['sfx'])} Soundeffekte, Ziel-Lautheit {C.TARGET_LUFS:.0f} LUFS, "
+          f"Stimme {mixed['voice_over_bg_db']:.1f} dB über Musik und Effekten")
 
     print("\n[E] VIDEO – Szenen rendern")
     C.EXPORTS.mkdir(exist_ok=True)
     out = C.EXPORTS / f"{proj['slug']}.mp4"
     srt = C.EXPORTS / f"{proj['slug']}.srt"
-    tmp = work / "render.mp4"
+    tmp, srt_tmp = work / "render.mp4", work / "render.srt"
     render.render_video(tl, work / "mix.wav", tmp, work)
-    timeline.write_srt(tl["cues"], srt)
+    timeline.write_srt(tl["cues"], srt_tmp)
 
     print("\n[F] QUALITY CONTROL")
-    checks = qc.check(tmp, tl, srt)
+    checks = qc.check(tmp, tl, srt_tmp, mixed)
     for c in checks:
         print(f"  {'✓' if c['ok'] else '✗'} {c['name']}: {c['detail']}")
     shots = [qc.frame_grab(tmp, sc["start"] + sc["duration"] * u) for sc in tl["scenes"] for u in (0.5, 0.95)]
     labels = [f"{sc['id']} {u:.0%}" for sc in tl["scenes"] for u in (0.5, 0.95)]
     render.contact_sheet(shots, labels, work / "qc_frames.png")
-    shutil.move(tmp, out)
+    shutil.move(tmp, out)           # Video und Untertitel erst nach der Kontrolle gemeinsam ablegen
+    shutil.move(srt_tmp, srt)
     rep = C.EXPORTS / f"{proj['slug']}_bericht.md"
     ok = report.write(rep, proj, tl, checks, used, missing, warnings,
                       {"video": out.name, "srt": srt.name})

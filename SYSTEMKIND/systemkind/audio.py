@@ -173,28 +173,92 @@ def write_wav(path, x):
         wf.writeframes((x * 32767).astype("<i2").tobytes())
 
 
-def mix(vo_path, music_path, sfx_path, out_path, duration: float, voice_filter: str | None = None) -> dict:
+def speech_level_db(x) -> float:
+    """Pegel der aktiven Sprache in dBFS RMS: 20-ms-Fenster, die höchstens 30 dB
+    unter dem lautesten liegen. Pausen zählen nicht mit."""
+    x = np.asarray(x, np.float64)
+    if x.ndim > 1:
+        x = x.mean(1)
+    n = int(0.02 * SR)
+    if len(x) < n:
+        return -120.0
+    rms = np.sqrt((x[: len(x) // n * n].reshape(-1, n) ** 2).mean(1))
+    if rms.max() <= 0:
+        return -120.0
+    act = rms[rms > rms.max() * 10 ** (-30 / 20)]
+    return float(20 * np.log10(np.sqrt((act ** 2).mean())))
+
+
+def vo_gain_db(vo) -> float:
+    """Verstärkung, die die Stimme auf den Referenzpegel bringt (0, wenn sie schon passt)."""
+    g = C.VO_LEVEL_DB - speech_level_db(vo)
+    return 0.0 if abs(g) <= C.VO_LEVEL_TOLERANCE_DB else round(g, 2)
+
+
+def _raw(path) -> np.ndarray:
+    x = np.fromfile(str(path), np.float32)
+    return x[: len(x) // 2 * 2].reshape(-1, 2).mean(1)
+
+
+def mix(vo_path, music_path, sfx_path, out_path, duration: float, voice_filter: str | None = None,
+        vo_gain: float = 0.0) -> dict:
     """Stimme aufbereiten, Musik unter der Stimme absenken (Sidechain),
-    alles mischen und in zwei Durchgängen auf Ziel-Lautheit normalisieren."""
-    graph = (
-        f"[0:a]{voice_filter or C.VOICE_FILTER},"
-        "aformat=channel_layouts=stereo,asplit=2[vo][key];"
-        "[1:a]volume=0.5[mus];"
-        "[mus][key]sidechaincompress=threshold=0.02:ratio=5:attack=20:release=420[duck];"
-        "[vo][duck][2:a]amix=inputs=3:normalize=0:duration=longest[mix]"
-    )
+    alles mischen und in zwei Durchgängen auf Ziel-Lautheit normalisieren.
+    Gibt Messwerte zurück, u. a. den Abstand der Stimme zu Musik und Effekten."""
+    duck = "sidechaincompress=threshold=0.02:ratio=5:attack=20:release=420"
     inputs = ["-i", str(vo_path), "-i", str(music_path), "-i", str(sfx_path)]
-    base = ["ffmpeg", "-nostdin", "-y", "-v", "info"] + inputs
     ln = f"loudnorm=I={C.TARGET_LUFS}:TP=-2.0:LRA=11"
-    p = subprocess.run(base + ["-filter_complex", graph + f";[mix]{ln}:print_format=json[o]",
-                               "-map", "[o]", "-f", "null", "-"], capture_output=True, text=True)
-    m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", p.stderr)
-    if not m:
-        raise RuntimeError("Lautheitsmessung fehlgeschlagen:\n" + p.stderr[-800:])
-    st = json.loads(m.group(0))
+    work = out_path.parent
+    trim = 0.0
+    for attempt in range(3):
+        vf = voice_filter or C.VOICE_FILTER
+        if vo_gain:
+            # Stimme auf Arbeitspegel bringen, aufbereiten, auf den Referenzpegel der Mischung
+            # trimmen; der Limiter fängt die Spitzen ab, die durch das Anheben entstehen.
+            vf = f"volume={vo_gain:.2f}dB,{vf},volume={trim:.2f}dB,alimiter=limit=0.94:level=disabled"
+        head = f"[0:a]{vf},aformat=channel_layouts=stereo,"
+        graph = (head + "asplit=2[vo][key];[1:a]volume=0.5[mus];"
+                 f"[mus][key]{duck}[duck];"
+                 "[vo][duck][2:a]amix=inputs=3:normalize=0:duration=longest[mix]")
+        # dieselbe Mischung, zusätzlich mit Stimme und Hintergrund als getrennten Ausgängen
+        probe = (head + "asplit=3[vo][key][vom];[1:a]volume=0.5[mus];"
+                 f"[mus][key]{duck},asplit=2[duck][duckm];[2:a]asplit=2[fx][fxm];"
+                 "[duckm][fxm]amix=inputs=2:normalize=0:duration=longest[bg];"
+                 "[vo][duck][fx]amix=inputs=3:normalize=0:duration=longest[mix]")
+        # Durchgang 1: Lautheit messen, Stimme und Hintergrund getrennt mitschreiben
+        p = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "info"] + inputs + [
+            "-filter_complex", probe + f";[mix]{ln}:print_format=json[o]",
+            "-map", "[o]", "-f", "null", "-",
+            "-map", "[vom]", "-f", "f32le", str(work / "_stem_vo.raw"),
+            "-map", "[bg]", "-f", "f32le", str(work / "_stem_bg.raw")], capture_output=True, text=True)
+        m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", p.stderr)
+        if not m:
+            raise RuntimeError("Lautheitsmessung fehlgeschlagen:\n" + p.stderr[-800:])
+        st = json.loads(m.group(0))
+        # Abstand Stimme zu Musik + Effekten, gemessen nur dort, wo gesprochen wird
+        v, b = _raw(work / "_stem_vo.raw"), _raw(work / "_stem_bg.raw")
+        n = int(0.05 * SR)
+        k = min(len(v), len(b)) // n
+        vr = np.sqrt((v[: k * n].reshape(k, n) ** 2).mean(1))
+        br = np.sqrt((b[: k * n].reshape(k, n) ** 2).mean(1))
+        act = vr > vr.max() * 10 ** (-30 / 20)
+        stem = float(20 * np.log10(np.sqrt((vr[act] ** 2).mean())))
+        st["voice_stem_db"] = stem
+        st["voice_over_bg_db"] = stem - float(20 * np.log10(max(np.sqrt((br[act] ** 2).mean()), 1e-9)))
+        st["vo_gain_db"], st["vo_trim_db"] = float(vo_gain), trim
+        if not vo_gain or abs(C.VO_STEM_DB - stem) <= 0.75 or attempt == 2:
+            break
+        trim = round(trim + C.VO_STEM_DB - stem, 2)
+    for f in ("_stem_vo.raw", "_stem_bg.raw"):
+        (work / f).unlink(missing_ok=True)
+    # Durchgang 2: normalisieren und schreiben
     ln2 = (f"{ln}:measured_I={st['input_i']}:measured_TP={st['input_tp']}:measured_LRA={st['input_lra']}"
-           f":measured_thresh={st['input_thresh']}:offset={st['target_offset']}:linear=true")
-    subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error"] + inputs + [
+           f":measured_thresh={st['input_thresh']}:offset={st['target_offset']}:linear=true:print_format=json")
+    p2 = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "info"] + inputs + [
         "-filter_complex", graph + f";[mix]{ln2},alimiter=limit=0.8:level=disabled[o]", "-map", "[o]",
-        "-t", f"{duration:.3f}", "-ar", str(SR), "-ac", "2", str(out_path)], check=True)
+        "-t", f"{duration:.3f}", "-ar", str(SR), "-ac", "2", str(out_path)], capture_output=True, text=True)
+    if p2.returncode != 0:
+        raise RuntimeError("Mischung fehlgeschlagen:\n" + p2.stderr[-800:])
+    m2 = re.search(r'"normalization_type"\s*:\s*"(\w+)"', p2.stderr)
+    st["normalization_type"] = m2.group(1) if m2 else "?"
     return st

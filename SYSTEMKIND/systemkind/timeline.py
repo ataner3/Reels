@@ -55,6 +55,37 @@ def build(project: dict, log=print) -> tuple[dict, np.ndarray]:
     return tl, vo[: int(total * sr)]
 
 
+def check_beats(tl) -> list[str]:
+    """Meldet Zeitpunkte (beat-Felder), die zu keinem Satz oder Wort passen.
+    Ohne diese Meldung greift still ein Standardwert und die Animation läuft unbemerkt asynchron."""
+    out = []
+
+    def test(v, sc, where):
+        if isinstance(v, bool) or not isinstance(v, (int, str)):
+            return
+        if scenes.beat(sc, v, None) is None:
+            out.append(f"Szene '{sc['id']}': Zeitpunkt {where} = {v!r} passt zu keinem Satz oder Wort – "
+                       "es gilt der Standardwert.")
+
+    def walk(obj, sc, path):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k == "beat" or k.endswith("_beat"):
+                    test(v, sc, path + k)
+                elif k.endswith("_beats") and isinstance(v, list):
+                    for j, x in enumerate(v):
+                        test(x, sc, f"{path}{k}[{j}]")
+                else:
+                    walk(v, sc, f"{path}{k}.")
+        elif isinstance(obj, list):
+            for j, x in enumerate(obj):
+                walk(x, sc, f"{path.rstrip('.')}[{j}].")
+
+    for sc in tl["scenes"]:
+        walk(sc["params"], sc, "")
+    return out
+
+
 def _cues(text: str, start: float, dur: float, word_times=None, max_chars=22, max_words=4):
     """Satz in kurze Untertitel-Blöcke zerlegen. Wortzeiten kommen von Piper
     (phonemgenau); passt die Wortzahl nicht zum Anzeigetext, wird die Zeit je

@@ -95,7 +95,7 @@
         "kicker": "Grund 1",
         "title": ["Zwei Wege zu", "*Einkommen*"],
         "cards": [
-          {"head": "Arbeit", "flow": ["Zeit", "Lohn"], "note": "Begrenzt durch die eigene Zeit.", "beat": "arbeitet,"},
+          {"head": "Arbeit", "flow": ["Zeit", "Lohn"], "note": "Begrenzt durch die eigene Zeit.", "beat": 1},
           {"head": "Kapital", "flow": ["Geld", "Ertrag"], "note": "Erträge lassen sich wieder anlegen.", "beat": 2, "highlight": true, "loop": true}
         ]
       }

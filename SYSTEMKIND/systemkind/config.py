@@ -80,4 +80,12 @@ VOICE_FILTER = ("highpass=f=60,bass=g=3:f=130:w=0.7,equalizer=f=320:t=q:w=1.2:g=
                 "acompressor=threshold=-22dB:ratio=2.5:attack=10:release=180:makeup=2.5")
 VO_LEAD_IN, VO_GAP, VO_TAIL = 0.35, 0.22, 0.45
 
+# Pegel der Stimme vor der Mischung (aktive Sprache, dBFS RMS). Stimmen, die deutlich
+# leiser oder lauter geliefert werden – ElevenLabs liegt rund 10 dB unter Piper –,
+# werden darauf angeglichen. Sonst ginge die Stimme in Musik und Effekten unter.
+VO_LEVEL_DB = -13.0                # Rohpegel, auf den vor der Aufbereitung angeglichen wird
+VO_LEVEL_TOLERANCE_DB = 2.0        # innerhalb dieser Spanne bleibt die Stimme unverändert
+VO_STEM_DB = -17.0                 # Pegel nach der Aufbereitung (Referenz: die Piper-Mischung)
+MIN_VOICE_OVER_BG_DB = 12.0        # Qualitätskontrolle: Abstand Stimme zu Musik + Effekten
+
 TRANSITION = 0.5                 # Sekunden, mittig auf dem Schnitt

@@ -22,7 +22,7 @@ def probe(path) -> dict:
     return {"video": v, "audio": a, "format": j["format"]}
 
 
-def check(path, tl, srt_path=None) -> list[dict]:
+def check(path, tl, srt_path=None, audio_stats=None) -> list[dict]:
     """Gibt eine Liste von Prüfungen zurück: {name, ok, detail}."""
     res = []
 
@@ -64,6 +64,11 @@ def check(path, tl, srt_path=None) -> list[dict]:
         add("True Peak ≤ −1 dBTP", tp <= -0.9, f"{tp:.1f} dBTP")
     else:
         add("Lautheit messbar", False, "Messung fehlgeschlagen")
+
+    if audio_stats and "voice_over_bg_db" in audio_stats:
+        v, g = audio_stats["voice_over_bg_db"], audio_stats.get("vo_gain_db") or 0
+        add(f"Stimme ≥ {C.MIN_VOICE_OVER_BG_DB:.0f} dB über Musik und Effekten", v >= C.MIN_VOICE_OVER_BG_DB,
+            f"{v:.1f} dB" + (f" (Stimme um {g + (audio_stats.get('vo_trim_db') or 0):+.1f} dB angeglichen)" if g else ""))
 
     cues = tl["cues"]
     overlaps = sum(1 for x, y in zip(cues, cues[1:]) if x["end"] > y["start"] + 1e-6)
