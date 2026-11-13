@@ -86,6 +86,10 @@ python main.py --topic "…" --voice elevenlabs
   Ein zweiter Lauf mit demselben Text kostet nichts.
 - ElevenLabs liest den normalen Text (`text`). Für Sonderfälle gibt es je Satz `say_elevenlabs`.
 - Der Schlüssel kann statt in `.env` auch in der Umgebungsvariable `ELEVENLABS_API_KEY` stehen.
+- Stimmen aus der Voice Library (z. B. Lenny) sperrt ElevenLabs im kostenlosen Tarif für die API;
+  dort funktionieren nur die mitgelieferten Standardstimmen. `--elevenlabs-check` zeigt das an.
+- ElevenLabs liefert die Stimme rund 10 dB leiser als Piper. Die Mischung gleicht den Pegel
+  automatisch an; die Qualitätskontrolle prüft den Abstand der Stimme zu Musik und Effekten.
 - Dauerhaft umstellen: `"provider": "elevenlabs"` in `VOICE`.
 
 ### Aussprache

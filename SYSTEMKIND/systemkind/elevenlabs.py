@@ -84,7 +84,8 @@ def _request(method: str, path: str, body: dict | None = None) -> dict:
 def check() -> dict:
     """Prüft Schlüssel, Kontingent und Stimme. Verbraucht keine Zeichen."""
     el = C.ELEVENLABS
-    out = {"voice_ok": False, "voice_name": None, "used": None, "limit": None, "tier": None, "notes": []}
+    out = {"voice_ok": False, "voice_name": None, "used": None, "limit": None, "tier": None, "notes": [],
+           "library_voice": None, "api_ok": None}
     try:
         sub = _request("GET", "/v1/user/subscription")
         out.update(used=sub.get("character_count"), limit=sub.get("character_limit"), tier=sub.get("tier"))
@@ -104,7 +105,19 @@ def check() -> dict:
         return out
     by_id = {v.get("voice_id"): v for v in voices}
     if el["voice_id"] in by_id:
-        out.update(voice_ok=True, voice_name=by_id[el["voice_id"]].get("name"))
+        v = by_id[el["voice_id"]]
+        # Stimmen aus der Voice Library sind „kopiert“; die mitgelieferten Standardstimmen nicht.
+        library = (v.get("sharing") or {}).get("status") == "copied"
+        out.update(voice_ok=True, voice_name=v.get("name"), library_voice=library, api_ok=True)
+        if library and out["tier"] == "free":
+            # ElevenLabs lehnt das mit 402 ab: „Free users cannot use library voices via the API.“
+            out["api_ok"] = False
+            out["notes"].append(
+                "Die Stimme stammt aus der Voice Library. Im kostenlosen Tarif sperrt ElevenLabs solche Stimmen "
+                "für die API – nutzbar sind dort nur die mitgelieferten Standardstimmen. Für diese Stimme ist "
+                "ein bezahlter Tarif nötig.")
+        elif library and out["tier"] is None:
+            out["api_ok"] = None
     else:
         match = [v for v in voices if el["voice_name"].lower() in (v.get("name") or "").lower()]
         out["notes"].append(

@@ -82,10 +82,14 @@ def elevenlabs_check() -> int:
     print(f"  {mark} Stimme {el['voice_name']} ({el['voice_id']})"
           + (f" – im Konto als „{info['voice_name']}“" if info["voice_ok"] else "")
           + (" – nicht prüfbar" if info["voice_ok"] is None else ""))
+    if info["voice_ok"]:
+        mark = {True: "✓", False: "✗", None: "?"}[info["api_ok"]]
+        print(f"  {mark} Über die API nutzbar: " + {True: "ja", False: "NEIN – im aktuellen Tarif gesperrt",
+                                                  None: "nicht prüfbar"}[info["api_ok"]])
     for n in info["notes"]:
         print(f"  Hinweis: {n}")
     print("Diese Prüfung hat keine Zeichen verbraucht.")
-    return 2 if info["voice_ok"] is False else 0
+    return 2 if info["voice_ok"] is False or info["api_ok"] is False else 0
 
 
 def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
@@ -102,9 +106,16 @@ def elevenlabs_gate(proj, vs, confirm_paid: bool) -> int:
     if not elevenlabs.api_key():
         print("  Kein Schlüssel gefunden. Bitte zuerst: python main.py --elevenlabs-setup")
         return 2
-    print(f"  KOSTENPFLICHTIG: {len(todo)} Sätze mit zusammen {chars} Zeichen werden bei ElevenLabs erzeugt.")
     try:
-        left = elevenlabs.remaining(elevenlabs.check())
+        info = elevenlabs.check()
+        if info["voice_ok"] is False or info["api_ok"] is False:
+            print(f"  ✗ Die Stimme {el['voice_name']} ist mit diesem Konto nicht über die API nutzbar – "
+                  "es wurde nichts erzeugt.")
+            for n in info["notes"]:
+                print(f"    {n}")
+            return 2
+        print(f"  KOSTENPFLICHTIG: {len(todo)} Sätze mit zusammen {chars} Zeichen werden bei ElevenLabs erzeugt.")
+        left = elevenlabs.remaining(info)
         if left is None:
             print("  Freies Kontingent: nicht lesbar (dem Schlüssel fehlt das Leserecht für das Konto).")
         else:
