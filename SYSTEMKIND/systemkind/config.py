@@ -42,10 +42,10 @@ CAPTION_Y = 1455                 # Mittelpunkt der Untertitelzeile
 # überschreiben. Hörproben: python main.py --voice-samples
 VOICE = {
     "provider": "piper",             # "piper" (lokal, kostenlos) oder "elevenlabs" (Konto nötig)
-    "name": "de_DE-karlsson-low",    # Piper-Stimme (wird bei Bedarf geladen)
+    "name": "de_DE-thorsten-medium", # Piper-Stimme, durchgehend CC0 (wird bei Bedarf geladen)
     "speaker": None,                 # nur bei Mehrsprecher-Modellen, z. B. de_DE-mls-medium
-    "pitch": -1.0,                   # Halbtöne; negativ = tiefer
-    "length_scale": 0.8,             # Sprechtempo; kleiner = schneller
+    "pitch": -2.0,                   # Halbtöne; negativ = tiefer
+    "length_scale": 1.0,             # Sprechtempo; kleiner = schneller
     "noise_scale": None,             # None = Standard der Stimme (natürliche Betonung)
     "noise_w": None,
 }

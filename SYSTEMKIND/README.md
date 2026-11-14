@@ -58,7 +58,8 @@ Ergebnis in `EXPORTS/`:
 
 ## Stimme
 
-Die Markenstimme steht in `systemkind/config.py` unter `VOICE`: Piper-Modell,
+Die Markenstimme von SYSTEMKIND ist `de_DE-thorsten-medium` (durchgehend CC0), zwei Halbtöne
+tiefer gestimmt. Sie steht in `systemkind/config.py` unter `VOICE`: Piper-Modell,
 Sprecher, Tonhöhe in Halbtönen (`pitch`, negativ = tiefer), Tempo (`length_scale`).
 Ein Projekt kann einzelne Werte unter `"voice"` überschreiben.
 
@@ -71,6 +72,7 @@ Mischung (`VOICE_FILTER`) ist auf einen warmen, weichen Klang eingestellt.
 
 ### ElevenLabs (optional)
 
+ElevenLabs ist abgeschaltet, solange kein Lauf ausdrücklich mit `--voice elevenlabs` gestartet wird.
 Neben Piper kann ElevenLabs sprechen – eingestellt ist die Stimme „Lenny – Casual Creator“
 (`ELEVENLABS` in `systemkind/config.py`). Piper bleibt der Standard.
 
@@ -147,10 +149,10 @@ EXPORTS/                fertige Videos
 
 Stimmen (laut Modellkarten unter huggingface.co/rhasspy/piper-voices):
 
-- `de_DE-karlsson-low` (Standard): Datensatz M-AILABS (gemeinfreie LibriVox-Aufnahmen, BSD-artige Lizenz).
+- `de_DE-thorsten-medium` (Standard): durchgehend CC0 (Datensatz Thorsten-Voice und Basismodell „rdh“).
+- `de_DE-karlsson-low`: Datensatz M-AILABS (gemeinfreie LibriVox-Aufnahmen, BSD-artige Lizenz).
   Das Modell wurde aus der englischen Stimme „Ryan“ weitertrainiert, deren Datensatz unter
   CC BY-NC-SA 4.0 steht (nicht kommerziell). Für kommerzielle Nutzung ist das nicht eindeutig geklärt.
-- `de_DE-thorsten-medium`: durchgehend CC0 (Datensatz Thorsten-Voice und Basismodell „rdh“).
 - `de_DE-thorsten-high`: Datensatz CC0; weitertrainiert aus der englischen Stimme „lessac“ mit eigener Lizenz.
 - `de_DE-mls-medium`: CC BY 4.0 (Multilingual LibriSpeech) – Namensnennung nötig.
 

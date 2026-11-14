@@ -1,6 +1,6 @@
 # Produktionsbericht – Warum werden die Reichen immer reicher?
 
-- Erstellt: 14.11.2026 08:51
+- Erstellt: 14.11.2026 08:56
 - Video: `warum-werden-die-reichen-immer-reicher.mp4`
 - Untertitel: `warum-werden-die-reichen-immer-reicher.srt`
 - Länge: 56.3 s · 6 Szenen · 127 Wörter Voice-over
@@ -23,11 +23,11 @@
 | Keine Schwarzbilder | ✅ | keine |
 | Keine Tonlücken | ✅ | keine |
 | Lautheit -14 LUFS (±1,5) | ✅ | -14.1 LUFS |
-| True Peak ≤ −1 dBTP | ✅ | -1.9 dBTP |
-| Stimme ≥ 12 dB über Musik und Effekten | ✅ | 15.0 dB |
+| True Peak ≤ −1 dBTP | ✅ | -1.8 dBTP |
+| Stimme ≥ 12 dB über Musik und Effekten | ✅ | 14.1 dB |
 | Untertitel vorhanden | ✅ | 44 Einblendungen |
 | Untertitel ohne Überlappung | ✅ | 0 Überlappungen |
-| Untertitel innerhalb der Laufzeit | ✅ | letzte endet bei 56.09 s |
+| Untertitel innerhalb der Laufzeit | ✅ | letzte endet bei 56.12 s |
 | Untertitel-Zeilenlänge ≤ 30 Zeichen | ✅ | längste Zeile: 29 Zeichen |
 | Untertitel lang genug lesbar | ✅ | alle ≥ 0,3 s |
 | SRT-Datei vollständig | ✅ | 44 Einträge |
@@ -38,10 +38,10 @@
 | # | Start | Dauer | Typ | Hintergrund | Voice-over |
 |---|---|---|---|---|---|
 | 1 | 0.0 s | 5.2 s | title | particles | Warum werden die Reichen immer reicher? Nicht durch Zufall. Sondern durch ein System. |
-| 2 | 5.2 s | 12.6 s | bars | grid | Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens. Die ärmere Hälfte der Menschheit: zwei Prozent. |
-| 3 | 17.8 s | 9.5 s | compare | beams | Der erste Grund: Vermögen arbeitet mit. Wer arbeitet, tauscht Zeit gegen Geld. Wer Aktien oder Immobilien besitzt, erhält Erträge – und kann sie wieder anlegen. |
-| 4 | 27.3 s | 12.4 s | growth | plain | Der zweite Grund: der Zinseszins. Ein Rechenbeispiel: fünf Prozent Rendite pro Jahr. Aus 10.000 Euro werden in dreißig Jahren rund 43.000. Aus einer Million: über vier Millionen. |
-| 5 | 39.6 s | 10.4 s | formula | rings | Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g. Kapital wuchs demnach meist schneller als die Wirtschaft. Die These ist unter Ökonomen umstritten. |
+| 2 | 5.2 s | 11.7 s | bars | grid | Laut Weltungleichheitsbericht 2022 besitzen die reichsten zehn Prozent rund 76 Prozent des weltweiten Vermögens. Die ärmere Hälfte der Menschheit: zwei Prozent. |
+| 3 | 16.9 s | 10.0 s | compare | beams | Der erste Grund: Vermögen arbeitet mit. Wer arbeitet, tauscht Zeit gegen Geld. Wer Aktien oder Immobilien besitzt, erhält Erträge – und kann sie wieder anlegen. |
+| 4 | 26.9 s | 12.9 s | growth | plain | Der zweite Grund: der Zinseszins. Ein Rechenbeispiel: fünf Prozent Rendite pro Jahr. Aus 10.000 Euro werden in dreißig Jahren rund 43.000. Aus einer Million: über vier Millionen. |
+| 5 | 39.9 s | 10.1 s | formula | rings | Der Ökonom Thomas Piketty fasst das in eine Formel: r größer g. Kapital wuchs demnach meist schneller als die Wirtschaft. Die These ist unter Ökonomen umstritten. |
 | 6 | 50.0 s | 6.3 s | outro | skyline | Vermögen kann sich selbst vermehren. Arbeitszeit nicht. Das ist kein Zufall. Das ist das System. |
 
 ## Fakten und Quellen
@@ -64,7 +64,7 @@
 
 ## Verwendete Assets und Lizenzen
 
-- Stimme: Piper TTS `de_DE-karlsson-low`, Tonhöhe -1.0 Halbtöne – Datensatz M-AILABS (gemeinfreie LibriVox-Aufnahmen, BSD-artige Lizenz). Das Modell wurde aus der englischen Stimme „Ryan“ weitertrainiert, deren Datensatz unter CC BY-NC-SA 4.0 steht (nicht kommerziell) – für kommerzielle Nutzung nicht eindeutig geklärt
+- Stimme: Piper TTS `de_DE-thorsten-medium`, Tonhöhe -2.0 Halbtöne – CC0 – Datensatz Thorsten-Voice (CC0), weitertrainiert aus dem Basismodell „rdh“ (CC0)
 - Musik und Soundeffekte: von der Pipeline selbst erzeugt (prozedural), keine Fremdrechte
 - Grafiken und Animationen: von der Pipeline selbst erzeugt
 - Schriften: Playfair Display und Inter – SIL Open Font License 1.1
