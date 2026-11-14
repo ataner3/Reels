@@ -1,0 +1,196 @@
+{
+  "topic": "Warum wird dein Geld jedes Jahr weniger wert?",
+  "status": "approved",
+  "music": {"seed": 5},
+  "research": {
+    "facts": [
+      {
+        "id": "f1",
+        "claim": "Die Europäische Zentralbank strebt seit ihrer Strategieüberprüfung vom Juli 2021 mittelfristig eine Inflationsrate von 2 % an (symmetrisches Ziel). Die Überprüfung von 2025 hat das Ziel bestätigt.",
+        "source": "Europäische Zentralbank: Erklärung zur geldpolitischen Strategie (2021); Pressemitteilung vom 30. Juni 2025",
+        "url": "https://www.ecb.europa.eu/mopo/strategy/strategy-review/ecb.strategyreview_monpol_strategy_statement.de.html",
+        "verified": true,
+        "confidence": "hoch",
+        "note": "Das Ziel bezieht sich auf den harmonisierten Verbraucherpreisindex (HVPI) des Euroraums. Über Suchergebnisse bestätigt; die Originalseite war aus der Produktionsumgebung nicht abrufbar."
+      },
+      {
+        "id": "f2",
+        "claim": "Als Begründung für 2 % statt 0 % gilt unter anderem ein Sicherheitsabstand (Puffer) zur Deflation, der zugleich geldpolitischen Spielraum erhält.",
+        "source": "Deutsche Bundesbank: Die geldpolitische Strategie des Eurosystems, Monatsbericht September 2021",
+        "url": "https://www.bundesbank.de/de/aufgaben/themen/ezb-stellt-neue-geldpolitische-strategie-vor-869180",
+        "verified": true,
+        "confidence": "mittel",
+        "note": "Einer von mehreren Gründen; im Video als „ein Grund“ formuliert. Über Suchergebnisse bestätigt, Originaltext nicht selbst gelesen."
+      },
+      {
+        "id": "f3",
+        "kind": "calculation",
+        "claim": "Bei konstant 2 % Inflation pro Jahr verdoppelt sich das Preisniveau in 35 Jahren (1,02^35 = 1,9999). Ein Einkauf für 100 € kostet dann rund 200 €; die Kaufkraft eines Geldbetrags halbiert sich.",
+        "source": "Eigene Berechnung (Zinseszinsformel P × (1 + i)^n)",
+        "url": "",
+        "verified": true,
+        "confidence": "hoch",
+        "note": "Reines Rechenbeispiel mit konstanter Rate – keine Prognose. Die tatsächliche Inflation schwankt."
+      },
+      {
+        "id": "f4",
+        "claim": "Inflationsrate in Deutschland (Verbraucherpreisindex, Veränderung im Jahresdurchschnitt): 2022 +6,9 %, 2023 +5,9 %, 2024 +2,2 %, 2025 +2,2 %.",
+        "source": "Statistisches Bundesamt (Destatis): Pressemitteilung Nr. 019 vom 16. Januar 2026; Verbraucherpreisindex, Tabellen 61111",
+        "url": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/01/PD26_019_611.html",
+        "verified": true,
+        "confidence": "hoch",
+        "note": "2025 aus der Destatis-Pressemitteilung; 2022 bis 2024 über eine IHK-Meldung mit Verweis auf die Destatis-Tabellen bestätigt (https://www.ihk.de/hannover/hauptnavigation/standort/konjunktur-statistik/aktuell/inflationsrate-2025-stabil-bei-2-2-prozent-6940438)."
+      },
+      {
+        "id": "f5",
+        "claim": "Inflation verteilt um: Wer nominal feste Geldforderungen hält, verliert; Schuldner und Besitzer realer Vermögenswerte stehen tendenziell besser da.",
+        "source": "Deutsche Bundesbank: Rede „Rückkehr der Inflation: Gefahr für Wohlstand und Arbeitsplätze?“ (Nürnberger Gespräche)",
+        "url": "https://www.bundesbank.de/de/presse/reden/rueckkehr-der-inflation-gefahr-fuer-wohlstand-und-arbeitsplaetze--900246",
+        "verified": true,
+        "confidence": "mittel",
+        "note": "Tendenzaussage, kein Automatismus. Über Suchergebnisse bestätigt, Originaltext nicht selbst gelesen."
+      }
+    ],
+    "uncertainties": [
+      "Das Rechenbeispiel unterstellt konstant 2 % Inflation; tatsächlich schwankt sie stark (2022: 6,9 %).",
+      "Der Vergleich „mehr als das Dreifache des Ziels“ stellt den deutschen Verbraucherpreisindex neben das 2-%-Ziel, das sich auf den HVPI des Euroraums bezieht. Auch der deutsche HVPI lag 2022 über dem Dreifachen.",
+      "Sachwerte und Schulden schützen nicht automatisch vor Inflation; die Aussage ist eine Tendenz und keine Anlageempfehlung."
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "title",
+      "background": "particles",
+      "transition": "fade",
+      "vo": [
+        {"text": "Warum wird dein Geld jedes Jahr weniger wert?"},
+        {"text": "Nicht aus Versehen."},
+        {"text": "Sondern nach Plan."}
+      ],
+      "params": {
+        "kicker": "SYSTEMKIND",
+        "lines": ["Warum wird", "dein *Geld*", "weniger *wert?*"],
+        "sub": ["Kein Versehen.", "Ein *Plan.*"],
+        "sub_beat": 1
+      }
+    },
+    {
+      "id": "ziel",
+      "type": "formula",
+      "background": "rings",
+      "transition": "sweep",
+      "facts": ["f1", "f2"],
+      "vo": [
+        {"text": "Die Europäische Zentralbank hat ein offizielles Ziel: zwei Prozent Inflation pro Jahr."},
+        {"text": "Ein Grund: ein Sicherheitsabstand zu fallenden Preisen."}
+      ],
+      "params": {
+        "kicker": "Das Ziel",
+        "formula": ["2", "%"],
+        "formula_beat": "zwei",
+        "formula_delay": -0.15,
+        "note": "Ein Grund: Sicherheitsabstand zur Deflation",
+        "note_beat": 1,
+        "source": "Europäische Zentralbank: Strategie von 2021, bestätigt 2025"
+      }
+    },
+    {
+      "id": "folge",
+      "type": "growth",
+      "background": "plain",
+      "transition": "push",
+      "facts": ["f3"],
+      "vo": [
+        {"text": "Was das bedeutet, zeigt ein Rechenbeispiel."},
+        {"text": "Bei zwei Prozent verdoppeln sich die Preise in 35 Jahren.",
+         "say": "Bei zwei Prozent verdoppeln sich die Preise in fünfunddreißig Jahren."},
+        {"text": "Dein Geldschein bleibt gleich."},
+        {"text": "Er kauft nur noch die Hälfte."}
+      ],
+      "params": {
+        "kicker": "Die Folge",
+        "title": ["Gleicher Schein,", "*halber Wert*"],
+        "rate": 0.02,
+        "years": 35,
+        "principals": [
+          {"label": "Derselbe Einkauf", "value": 100}
+        ],
+        "chip": "2 % Inflation pro Jahr",
+        "start_beat": "Bei",
+        "end_beat": 2,
+        "end_offset": 0.2,
+        "footnote": "Rechenbeispiel mit konstant 2 % – keine Prognose."
+      }
+    },
+    {
+      "id": "realitaet",
+      "type": "bars",
+      "background": "grid",
+      "transition": "sweep",
+      "facts": ["f4"],
+      "vo": [
+        {"text": "Und das Ziel wird nicht immer getroffen."},
+        {"text": "2022 lag die Inflation in Deutschland bei 6,9 Prozent.",
+         "say": "Zweitausendzweiundzwanzig lag die Inflation in Deutschland bei sechskommaneun Prozent."},
+        {"text": "Mehr als das Dreifache des Ziels."}
+      ],
+      "params": {
+        "kicker": "Die Realität",
+        "title": ["Inflation in", "*Deutschland*"],
+        "unit": "%",
+        "max": 8,
+        "items": [
+          {"label": "2022", "value": 6.9, "decimals": 1, "highlight": true, "beat": "6,9", "delay": -1.0},
+          {"label": "2023", "value": 5.9, "decimals": 1, "beat": "6,9", "delay": 0.6},
+          {"label": "2024 und 2025, jeweils", "value": 2.2, "decimals": 1, "beat": "6,9", "delay": 1.4}
+        ],
+        "source": "Quelle: Statistisches Bundesamt, Verbraucherpreisindex"
+      }
+    },
+    {
+      "id": "wirkung",
+      "type": "compare",
+      "background": "beams",
+      "transition": "dip",
+      "facts": ["f5"],
+      "vo": [
+        {"text": "Inflation verteilt um."},
+        {"text": "Wer Geld nur liegen lässt, verliert Kaufkraft."},
+        {"text": "Wer Schulden hat oder Sachwerte besitzt, steht besser da."}
+      ],
+      "params": {
+        "kicker": "Die Wirkung",
+        "title": ["Wer verliert,", "wer *gewinnt?*"],
+        "cards": [
+          {"head": "Bargeld & Guthaben", "flow": ["Inflation", "Verlust"], "note": "Die Kaufkraft sinkt jedes Jahr.", "beat": 1},
+          {"head": "Schulden & Sachwerte", "flow": ["Inflation", "Vorteil"], "note": "Schulden wiegen weniger, Sachwerte steigen oft mit.", "beat": 2, "highlight": true}
+        ]
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "background": "skyline",
+      "transition": "fade",
+      "vo": [
+        {"text": "Zwei Prozent klingen harmlos."},
+        {"text": "In 35 Jahren ist dein Geld nur noch halb so viel wert.",
+         "say": "In fünfunddreißig Jahren ist dein Geld nur noch halb so viel wert."},
+        {"text": "Das ist kein Zufall."},
+        {"text": "Das ist das System."}
+      ],
+      "params": {
+        "lines": ["2 % klingen harmlos.", "*In 35 Jahren: halber Wert.*"],
+        "line_beats": [0, 1],
+        "brand_beat": 2,
+        "tagline": "Verstehe das System.",
+        "sources": [
+          "Europäische Zentralbank: Strategie 2021 und 2025",
+          "Statistisches Bundesamt: Verbraucherpreisindex",
+          "Preisverdopplung: eigene Berechnung, 1,02^35 = 2,00"
+        ]
+      }
+    }
+  ]
+}
