@@ -255,8 +255,11 @@ def mix(vo_path, music_path, sfx_path, out_path, duration: float, voice_filter: 
     ln2 = (f"{ln}:measured_I={st['input_i']}:measured_TP={st['input_tp']}:measured_LRA={st['input_lra']}"
            f":measured_thresh={st['input_thresh']}:offset={st['target_offset']}:linear=true:print_format=json")
     p2 = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "info"] + inputs + [
-        "-filter_complex", graph + f";[mix]{ln2},alimiter=limit=0.8:level=disabled[o]", "-map", "[o]",
-        "-t", f"{duration:.3f}", "-ar", str(SR), "-ac", "2", str(out_path)], capture_output=True, text=True)
+        # loudnorm gibt seine Zeitstempel um bis zu 0,1 s versetzt aus; -t schnitt deshalb das Ende
+        # der Tonspur zu früh ab. asetpts zählt die Zeit neu ab null, apad füllt notfalls auf.
+        "-filter_complex", graph + f";[mix]{ln2},alimiter=limit=0.8:level=disabled,"
+                                   f"asetpts=N/SR/TB,apad=whole_dur={duration:.6f}[o]", "-map", "[o]",
+        "-t", f"{duration:.6f}", "-ar", str(SR), "-ac", "2", str(out_path)], capture_output=True, text=True)
     if p2.returncode != 0:
         raise RuntimeError("Mischung fehlgeschlagen:\n" + p2.stderr[-800:])
     m2 = re.search(r'"normalization_type"\s*:\s*"(\w+)"', p2.stderr)

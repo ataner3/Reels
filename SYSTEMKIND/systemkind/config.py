@@ -69,10 +69,14 @@ VOICE_PRESETS = {                    # für --voice-samples
     "D_karlsson": {"name": "de_DE-karlsson-low", "pitch": -1.0, "length_scale": 0.8},
 }
 VOICE_BASE_URL = "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
-VOICE_LICENSES = {
-    "karlsson": "M-AILABS Speech Dataset, BSD-artige Lizenz (https://www.caito.de/2019/01/03/the-m-ailabs-speech-dataset/)",
-    "thorsten": "CC0 (Thorsten-Voice, https://github.com/thorstenMueller/Thorsten-Voice)",
-    "mls": "CC BY 4.0 (Multilingual LibriSpeech, https://www.openslr.org/94/)",
+VOICE_LICENSES = {      # laut Modellkarten unter huggingface.co/rhasspy/piper-voices (Stand November 2026)
+    "de_DE-karlsson-low": "Datensatz M-AILABS (gemeinfreie LibriVox-Aufnahmen, BSD-artige Lizenz). Das Modell wurde "
+                          "aus der englischen Stimme „Ryan“ weitertrainiert, deren Datensatz unter CC BY-NC-SA 4.0 "
+                          "steht (nicht kommerziell) – für kommerzielle Nutzung nicht eindeutig geklärt",
+    "de_DE-thorsten-medium": "CC0 – Datensatz Thorsten-Voice (CC0), weitertrainiert aus dem Basismodell „rdh“ (CC0)",
+    "de_DE-thorsten-high": "Datensatz Thorsten-Voice (CC0). Das Modell wurde aus der englischen Stimme „lessac“ "
+                           "weitertrainiert, deren Datensatz eine eigene Lizenz hat (Blizzard Challenge 2013)",
+    "de_DE-mls-medium": "CC BY 4.0 (Multilingual LibriSpeech, https://www.openslr.org/94/) – Namensnennung nötig",
 }
 # Aufbereitung der Stimme in der Mischung: warm und weich statt scharf
 VOICE_FILTER = ("highpass=f=60,bass=g=3:f=130:w=0.7,equalizer=f=320:t=q:w=1.2:g=-1.5,"

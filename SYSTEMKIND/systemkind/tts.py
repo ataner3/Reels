@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import unicodedata
 import urllib.request
 import wave
 
@@ -61,8 +62,7 @@ def voice_available(name=None):
 
 def voice_license(name=None):
     name = name or C.VOICE["name"]
-    return next((v for k, v in C.VOICE_LICENSES.items() if f"-{k}" in name),
-                "siehe MODEL_CARD der Stimme unter huggingface.co/rhasspy/piper-voices")
+    return C.VOICE_LICENSES.get(name, "siehe MODEL_CARD der Stimme unter huggingface.co/rhasspy/piper-voices")
 
 
 def download_voice(name=None):
@@ -119,7 +119,10 @@ def spoken(text: str) -> str:
         if rep is None:
             out.append(tok)
         elif rep.startswith("[["):
-            out.append(f"[[ {rep.strip('[] ')}{punct} ]]")
+            # Zerlegte Zeichenform (NFD), wie eSpeak sie liefert und die Stimmen sie gelernt
+            # haben: „ç“ wird zu c + Cedille. Die zusammengesetzte Form kennt keine Stimme.
+            ipa = unicodedata.normalize("NFD", rep.strip("[] "))
+            out.append(f"[[ {ipa}{punct} ]]")
         else:
             out.append(rep + punct)
     return " ".join(out)

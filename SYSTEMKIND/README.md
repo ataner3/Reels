@@ -145,7 +145,14 @@ EXPORTS/                fertige Videos
 
 ## Lizenzen
 
-- Stimme `de_DE-karlsson-low` (Standard): M-AILABS Speech Dataset, BSD-artige Lizenz
-- Stimme `de_DE-thorsten-high`: CC0 (Thorsten-Voice)
-- Stimmen aus `de_DE-mls-medium`: CC BY 4.0 (Multilingual LibriSpeech) – Namensnennung nötig
-- Schriften Playfair Display und Inter: SIL Open Font License 1.1
+Stimmen (laut Modellkarten unter huggingface.co/rhasspy/piper-voices):
+
+- `de_DE-karlsson-low` (Standard): Datensatz M-AILABS (gemeinfreie LibriVox-Aufnahmen, BSD-artige Lizenz).
+  Das Modell wurde aus der englischen Stimme „Ryan“ weitertrainiert, deren Datensatz unter
+  CC BY-NC-SA 4.0 steht (nicht kommerziell). Für kommerzielle Nutzung ist das nicht eindeutig geklärt.
+- `de_DE-thorsten-medium`: durchgehend CC0 (Datensatz Thorsten-Voice und Basismodell „rdh“).
+- `de_DE-thorsten-high`: Datensatz CC0; weitertrainiert aus der englischen Stimme „lessac“ mit eigener Lizenz.
+- `de_DE-mls-medium`: CC BY 4.0 (Multilingual LibriSpeech) – Namensnennung nötig.
+
+Schriften Playfair Display und Inter: SIL Open Font License 1.1.
+Musik, Soundeffekte und Grafiken erzeugt die Pipeline selbst.
