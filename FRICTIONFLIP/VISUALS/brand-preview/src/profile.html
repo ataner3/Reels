@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="base.css">
+<style>
+body{width:1080px}
+#avatar{width:1080px;height:1080px;display:flex;align-items:center;justify-content:center}
+.mg{display:flex;align-items:stretch;font-family:"Barlow Condensed";font-weight:700;font-size:520px;line-height:1}
+span.a,span.b{display:flex;align-items:center;justify-content:center;width:290px;height:500px}
+.mg .b{background:var(--c);color:var(--g)}
+.mg em{font-style:normal;display:block;height:.7em;line-height:.7em}
+.mg em u{text-decoration:none;display:block;transform:translateY(-.05em)}
+.mg .b em{transform:rotate(180deg)}
+#crop{width:1080px;height:620px;display:flex;align-items:center;justify-content:center;gap:90px;background:#0e0f0d}
+#crop div{background-size:cover;border-radius:50%}
+#crop p{position:absolute;left:48px;top:40px;font-size:20px;opacity:.6}
+</style>
+<div class="art" id="avatar"><div class="mg"><span class="a"><em><u>F</u></em></span><span class="b"><em><u>F</u></em></span></div></div>
+<div id="crop" style="position:relative"><p class="mono">Circle crop check — 400 / 160 / 64 px</p>
+ <div style="width:400px;height:400px" class="c"></div><div style="width:160px;height:160px" class="c"></div><div style="width:64px;height:64px" class="c"></div></div>
+<script src="base.js"></script>
+<script>const u=new URLSearchParams(location.search).get('img');if(u)document.querySelectorAll('.c').forEach(e=>e.style.backgroundImage=`url(${u})`)</script>

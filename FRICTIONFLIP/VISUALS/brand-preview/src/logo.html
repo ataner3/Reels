@@ -1,0 +1,43 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="base.css">
+<style>
+body{width:2400px;height:1500px}
+#sheet{width:2400px;height:1500px;display:grid;grid-template-rows:940px 560px}
+#primary{display:flex;flex-direction:column;justify-content:center;padding-left:200px;--rm:72px}
+#primary .wm{--wm:330px}
+.claim{font-size:38px;margin-top:54px;letter-spacing:.2em;display:flex;align-items:center;gap:28px}
+.claim i{display:block;width:96px;height:2px;background:var(--c)}
+.tag{position:absolute;font-size:22px;opacity:.6}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:2px solid rgba(230,224,212,.25)}
+.cell{display:flex;align-items:center;justify-content:center;--rm:36px;--rs:28px}
+.cell+.cell{border-left:2px solid rgba(230,224,212,.25)}
+.cell .wm{--wm:128px}
+.cell .tag{left:36px;bottom:30px;font-size:18px}
+#chips{flex-direction:column;align-items:stretch;justify-content:center;padding:0 80px;gap:14px}
+.chip{display:flex;align-items:center;gap:22px;font-size:20px}
+.chip b{display:block;width:150px;height:64px;border:2px solid rgba(230,224,212,.3)}
+.chip span{opacity:.6;margin-left:auto}
+.wm i{font-style:normal}
+</style>
+<div id="sheet">
+ <div class="art" id="primary">
+  <i class="reg tl"></i><i class="reg tr"></i><i class="reg bl"></i><i class="reg br"></i>
+  <div class="tag mono" style="left:200px;top:80px">FF — Wordmark / Primary</div>
+  <div class="tag mono" style="right:200px;top:80px">Draft 01 · Not final</div>
+  <div><div class="wm"><span class="a">Friction</span><span class="b">Flip</span></div></div>
+  <div class="claim mono"><i></i>Small problems. Smarter solutions.</div>
+ </div>
+ <div class="row">
+  <div class="art light cell"><div class="wm"><span class="a">Friction</span><span class="b">Flip</span></div><div class="tag mono">On Paper White</div></div>
+  <div class="art cell"><div class="wm stack" style="--wm:150px"><span class="a">Friction</span><span class="b"><i>F</i><i>L</i><i>I</i><i>P</i></span></div><div class="tag mono">Stacked</div></div>
+  <div class="art cell" id="chips">
+   <div class="chip mono"><b style="background:#171816"></b>Graphite<span>#171816</span></div>
+   <div class="chip mono"><b style="background:#D96B32"></b>Copper Orange<span>#D96B32</span></div>
+   <div class="chip mono"><b style="background:#E6E0D4"></b>Paper White<span>#E6E0D4</span></div>
+   <div class="chip mono"><b style="background:#087F79;width:40px"></b>Petrol · sparingly<span>#087F79</span></div>
+  </div>
+ </div>
+</div>
+<!-- standalone exports -->
+<div class="art" id="solo-dark" style="width:2000px;height:700px;display:flex;align-items:center;justify-content:center"><div class="wm" style="--wm:300px"><span class="a">Friction</span><span class="b">Flip</span></div></div>
+<div class="art light" id="solo-light" style="width:2000px;height:700px;display:flex;align-items:center;justify-content:center"><div class="wm" style="--wm:300px"><span class="a">Friction</span><span class="b">Flip</span></div></div>
+<script src="base.js"></script>

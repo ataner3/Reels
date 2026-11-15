@@ -1,0 +1,83 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="base.css">
+<style>
+body{width:1080px;height:1920px}
+.art{width:1080px;height:1920px}
+svg.scene{position:absolute;inset:0}
+.top{position:absolute;left:64px;right:180px;top:232px;display:flex;justify-content:space-between;font-size:28px}
+.top span:last-child{opacity:.6}
+.head{position:absolute;left:64px;top:330px;right:180px}
+.lab{display:inline-block;font-size:30px;padding:8px 16px;background:var(--w);color:var(--g);margin-bottom:30px}
+.lab.c{background:var(--c)}
+.lab.n{margin-right:12px}
+.head h1{font-size:128px;font-weight:700}
+.head .bar{width:150px;margin-top:34px}
+.sub{position:absolute;left:64px;right:180px;bottom:440px}
+.sub p{display:inline;font-size:56px;font-weight:500;line-height:1.42;background:var(--g);padding:6px 18px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.ln{stroke:#E6E0D4;stroke-width:3;fill:none;stroke-linecap:square}
+.th{stroke:#E6E0D4;stroke-width:2;fill:none;opacity:.55}
+.dim{stroke:#087F79;stroke-width:3;fill:none}
+.call{font:500 26px "IBM Plex Mono";letter-spacing:.09em;fill:#E6E0D4;opacity:.75}
+/* verdict card */
+.card{position:absolute;left:64px;right:180px;top:560px;background:var(--w);color:var(--g);padding:44px 48px 52px}
+.card .k{font-size:26px;opacity:.65;display:flex;justify-content:space-between}
+.card h2{font-size:78px;margin:22px 0 30px}
+.stamp{display:inline-block;font-size:150px;border:6px solid var(--g);padding:6px 28px 0;transform:rotate(-3deg);margin:6px 0 40px 4px}
+.pm{border-top:2px solid var(--g);padding-top:26px;display:grid;grid-template-columns:64px 1fr;row-gap:20px;font-size:40px;font-weight:500;line-height:1.25}
+.pm b{font-family:"IBM Plex Mono";font-size:44px}
+[data-f]{display:none}
+</style>
+<div class="art">
+<svg class="scene" viewBox="0 0 1080 1920">
+ <defs><filter id="wood"><feTurbulence type="fractalNoise" baseFrequency="0.004 0.22" numOctaves="4" seed="11"/><feColorMatrix values="0 0 0 0 .9  0 0 0 0 .88  0 0 0 0 .83  0 0 0 .55 -.12"/></filter>
+ <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="14" stroke="#E6E0D4" stroke-width="2" opacity=".28"/></pattern></defs>
+ <g id="sc"><!-- desk edge, front elevation -->
+ <rect x="-10" y="1060" width="1100" height="74" fill="#23241f"/><rect x="-10" y="1060" width="1100" height="74" filter="url(#wood)" opacity=".5"/>
+ <path class="ln" d="M-10 1060H1090M-10 1134H1090"/>
+ <rect x="-10" y="1134" width="1100" height="26" fill="url(#hatch)"/>
+ <g data-f="a">
+  <path class="ln" style="stroke-width:16" d="M470 1060V1010"/><path d="M470 1060V1010" stroke="#171816" stroke-width="10"/>
+  <path class="ln" style="stroke-width:16;stroke-dasharray:2 26;opacity:.5" d="M470 1140V1260"/>
+  <g transform="translate(470 1300) rotate(14) scale(1.25)"><path class="ln" style="stroke-width:16" d="M0 -60V-20"/><rect class="ln" x="-30" y="-20" width="60" height="118" fill="#171816"/><rect class="ln" x="-18" y="98" width="36" height="26" fill="#171816"/></g>
+  <path class="ln" d="M560 1250v70M600 1230v110M640 1260v60"/>
+  <path class="ln cu" style="stroke:#D96B32;stroke-width:5" d="M360 1190V1400M338 1374l22 30 22-30"/>
+  <path class="th" d="M700 1097H840"/><text class="call" x="700" y="1040">DESK EDGE</text>
+  <text class="call" x="150" y="1300" style="fill:#D96B32;opacity:1">GONE.</text>
+ </g>
+ <g data-f="b">
+  <!-- cable through the handle -->
+  <path class="ln" style="stroke-width:16;stroke-dasharray:2 26;opacity:.5" d="M540 1166V1226"/>
+  <path class="ln" style="stroke-width:16" d="M540 1040V930"/><path d="M540 1046V930" stroke="#171816" stroke-width="10"/>
+  <rect class="ln" x="510" y="812" width="60" height="118" fill="#171816"/><rect class="ln" x="522" y="786" width="36" height="26" fill="#171816"/>
+  <!-- binder clip -->
+  <rect class="ln" x="415" y="1040" width="250" height="118" fill="#171816"/>
+  <path class="th" d="M415 1070H665"/>
+  <path class="ln" style="stroke-width:6" d="M452 1040 L474 962 Q478 946 494 946 H586 Q602 946 606 962 L628 1040"/>
+  <path class="dim" d="M415 1250H665M415 1228v44M665 1228v44"/><path class="th" style="stroke:#087F79;opacity:.6" d="M415 1166v56M665 1166v56"/>
+  <text class="call" x="690" y="1260" style="fill:#087F79;opacity:1">1.25 IN</text>
+  <path class="th" d="M612 990H770"/><text class="call" x="784" y="999">HANDLE</text>
+  <path class="th" d="M576 860H770"/><text class="call" x="784" y="869">PLUG</text>
+ </g></g>
+</svg>
+<div class="top mono"><span>FF-0001</span><span>Frictionflip</span></div>
+<div data-f="a">
+ <div class="head"><span class="lab mono">Problem</span><h1 class="hd">Your charger<br>keeps <span class="cu">falling</span><br>behind the desk</h1><div class="bar"></div></div>
+ <div class="sub"><p>Every night. Same cable.</p></div>
+</div>
+<div data-f="b">
+ <div class="head"><span class="lab mono c n">02</span><span class="lab mono">Fix</span><h1 class="hd">Clip it<br>to the <span class="cu">edge</span></h1><div class="bar"></div></div>
+ <div class="sub"><p>Thread the cable through the handle.</p></div>
+</div>
+<div data-f="c">
+ <div class="head"><span class="lab mono">Verdict</span></div>
+ <div class="card"><div class="k mono"><span>Tested · 14 days</span><span>Sample card</span></div>
+  <h2 class="hd">Binder clip cable stop</h2>
+  <div class="stamp hd">Works, but</div>
+  <div class="pm"><b>+</b><span>Holds the plug where you left it</span><b>–</b><span>Too small for desks over 1 in thick</span></div>
+ </div>
+ <div class="sub"><p>Cheap fix. One real limit.</p></div>
+</div>
+</div>
+<script src="base.js"></script>
+<script>const f=new URLSearchParams(location.search).get('f')||'a';document.querySelectorAll(`[data-f=${f}]`).forEach(e=>e.style.display='block');
+document.getElementById('sc').setAttribute('transform','translate(0 '+({a:-110,b:-40,c:60}[f])+')');
+if(f=='c')document.querySelector('.scene').style.opacity=.35</script>
