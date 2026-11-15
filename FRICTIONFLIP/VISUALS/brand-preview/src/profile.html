@@ -1,19 +1,47 @@
 <!doctype html><meta charset="utf-8"><link rel="stylesheet" href="base.css">
 <style>
-body{width:1080px}
-#avatar{width:1080px;height:1080px;display:flex;align-items:center;justify-content:center}
-.mg{display:flex;align-items:stretch;font-family:"Barlow Condensed";font-weight:700;font-size:520px;line-height:1}
-span.a,span.b{display:flex;align-items:center;justify-content:center;width:290px;height:500px}
-.mg .b{background:var(--c);color:var(--g)}
-.mg em{font-style:normal;display:block;height:.7em;line-height:.7em}
-.mg em u{text-decoration:none;display:block;transform:translateY(-.05em)}
-.mg .b em{transform:rotate(180deg)}
-#crop{width:1080px;height:620px;display:flex;align-items:center;justify-content:center;gap:90px;background:#0e0f0d}
-#crop div{background-size:cover;border-radius:50%}
-#crop p{position:absolute;left:48px;top:40px;font-size:20px;opacity:.6}
+body{width:1200px;background:#0e0f0d}
+#avatar{width:1080px;height:1080px}
+#avatar svg.mg{position:absolute;inset:0}
+#crop{width:1200px;padding:56px 56px 64px;position:relative}
+#crop h4{font-size:20px;opacity:.6;margin-bottom:28px;font-weight:500}
+.strip{display:flex;align-items:flex-end;gap:56px;padding:40px 48px;margin-bottom:28px}
+.strip.light{background:var(--w);color:var(--g)}
+.strip.dark{background:#000;color:var(--w)}
+.strip figure{display:flex;flex-direction:column;align-items:center;gap:14px}
+.strip figcaption{font:500 18px "IBM Plex Mono";letter-spacing:.08em;opacity:.65}
+.c{background-size:cover;border-radius:50%}
+.c.sq{border-radius:0}
+.uiname{display:flex;align-items:center;gap:14px;font:500 22px "IBM Plex Sans"}
+.uiname small{display:block;font-size:17px;opacity:.6;font-weight:400}
 </style>
-<div class="art" id="avatar"><div class="mg"><span class="a"><em><u>F</u></em></span><span class="b"><em><u>F</u></em></span></div></div>
-<div id="crop" style="position:relative"><p class="mono">Circle crop check — 400 / 160 / 64 px</p>
- <div style="width:400px;height:400px" class="c"></div><div style="width:160px;height:160px" class="c"></div><div style="width:64px;height:64px" class="c"></div></div>
+<div class="art" id="avatar">
+ <!-- Monogram cut: two upright F, built from rectangles for pixel clarity at small sizes.
+      Left F: Paper White on Graphite. Right F: Graphite on Copper plate (same split as wordmark). -->
+ <svg class="mg" viewBox="0 0 1080 1080">
+  <defs><g id="F"><rect x="0" y="0" width="100" height="500"/><rect x="0" y="0" width="300" height="100"/><rect x="0" y="212" width="240" height="96"/></g></defs>
+  <use href="#F" x="165" y="290" fill="#E6E0D4"/>
+  <rect x="505" y="230" width="410" height="620" fill="#D96B32"/>
+  <use href="#F" x="560" y="290" fill="#171816"/>
+ </svg>
+</div>
+<div id="crop">
+ <h4 class="mono">Size check · circle crop · 400 / 160 / 60 / 48 / 40 px</h4>
+ <div class="strip dark">
+  <figure><div class="c" style="width:400px;height:400px"></div><figcaption>400</figcaption></figure>
+  <figure><div class="c" style="width:160px;height:160px"></div><figcaption>160</figcaption></figure>
+  <figure><div class="c" style="width:60px;height:60px"></div><figcaption>60</figcaption></figure>
+  <figure><div class="c" style="width:48px;height:48px"></div><figcaption>48</figcaption></figure>
+  <figure><div class="c" style="width:40px;height:40px"></div><figcaption>40</figcaption></figure>
+  <figure><div class="c sq" style="width:48px;height:48px"></div><figcaption>48 SQ</figcaption></figure>
+ </div>
+ <div class="strip light">
+  <figure><div class="c" style="width:160px;height:160px"></div><figcaption>160</figcaption></figure>
+  <figure><div class="c" style="width:60px;height:60px"></div><figcaption>60</figcaption></figure>
+  <figure><div class="c" style="width:48px;height:48px"></div><figcaption>48</figcaption></figure>
+  <figure><div class="c" style="width:40px;height:40px"></div><figcaption>40</figcaption></figure>
+  <div class="uiname" style="margin-left:auto;margin-bottom:34px"><div class="c" style="width:48px;height:48px"></div><div>FRICTIONFLIP<small>@handle · not set yet</small></div></div>
+ </div>
+</div>
 <script src="base.js"></script>
 <script>const u=new URLSearchParams(location.search).get('img');if(u)document.querySelectorAll('.c').forEach(e=>e.style.backgroundImage=`url(${u})`)</script>
