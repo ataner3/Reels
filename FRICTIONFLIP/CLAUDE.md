@@ -11,7 +11,17 @@ Produktionsumgebung für KI-gestützt erstellte TikTok-Videos.
 - Interne Dokumentation (READMEs, Notizen, Analysen): Deutsch.
 
 ## Branding
-- Einzige Quelle der Wahrheit: `BRAND/BRAND_IDENTITY.md` und die Dateien in `BRAND/`.
+- Einzige Quelle der Wahrheit: `BRAND/BRAND_IDENTITY.md` (Identität) und
+  `BRAND/VISUAL_GUIDELINES.md` (Gestaltungsregeln). Beide werden unten eingebunden und
+  gelten für **jede** Arbeit an Skripten, Storyboards, Visuals, Videos und Thumbnails.
+- Kurzfassung: Brand `FRICTIONFLIP` · Claim `SMALL PROBLEMS. SMARTER SOLUTIONS.` ·
+  Stil „Industrial Editorial Design meets Inventor's Workshop" · Farben Graphite `#171816`,
+  Copper Orange `#D96B32`, Paper White `#E6E0D4`, Petrol `#087F79` (sparsam).
+- Keine generische KI-Optik, keine Neonverläufe, keine futuristischen Standardlogos.
+- Vor jeder Freigabe eines visuellen Ergebnisses die Prüfliste in
+  `BRAND/VISUAL_GUIDELINES.md` (Abschnitt 8) abarbeiten.
+- Punkte, die in `BRAND_IDENTITY.md` unter „Noch nicht festgelegt" stehen (z. B. Logo,
+  Handles), werden nicht eigenständig entworfen.
 - Das Branding wird **nicht eigenständig verändert, ergänzt oder interpretiert**
   (Name, Tonalität, Farben, Schriften, Logo, Claims). Änderungen nur auf ausdrückliche
   Anweisung des Projektinhabers.
@@ -56,3 +66,15 @@ Produktionsumgebung für KI-gestützt erstellte TikTok-Videos.
 - Zielformat: 9:16, 1080×1920, MP4 (H.264/AAC).
 - Jeder Schritt wird vom Projektinhaber freigegeben, bevor der nächste beginnt
   (Skript → Storyboard → Produktion → Export).
+
+## Arbeitsbereich und Git
+- Gearbeitet wird ausschließlich in `FRICTIONFLIP/`. Dateien des Projekts Fabulous
+  (`Fabulous/`, `Fabulous.xcodeproj/`, `web/`, `docs/`, Wurzel-`README.md`, Wurzel-`.gitignore`)
+  werden nicht verändert.
+- Kein Merge in `main` ohne ausdrückliche Anweisung.
+- Videos, Renderdateien und Exporte gehören nicht ins Git (siehe `FRICTIONFLIP/.gitignore`).
+  Versioniert werden Texte, Regeln, Skripte, Storyboards und kleine Vorlagen.
+
+## Markenrichtlinien (automatisch eingebunden)
+@BRAND/BRAND_IDENTITY.md
+@BRAND/VISUAL_GUIDELINES.md

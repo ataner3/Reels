@@ -1,0 +1,57 @@
+# FRICTIONFLIP – gilt nur für diesen Ordner
+
+# Videodateien (überall)
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.avi
+*.webm
+*.mxf
+*.prores
+*.gif
+
+# Unkomprimiertes / großes Audio
+*.wav
+*.aif
+*.aiff
+*.flac
+
+# Arbeitsstände und Exporte: nur die README bleibt versioniert
+VIDEOS/*
+!VIDEOS/README.md
+EXPORTS/*
+!EXPORTS/README.md
+
+# Temporäre Render- und Cache-Dateien
+tmp/
+temp/
+cache/
+render/
+renders/
+frames/
+proxies/
+.cache/
+*.tmp
+*.part
+*.log
+*.ffindex
+*_frames/
+*.pkf
+*.pek
+*.cfa
+
+# Große Quelldateien aus Grafik-/Schnittprogrammen
+*.psd
+*.psb
+*.aep
+*.prproj
+*.drp
+*.blend
+*.zip
+
+# System
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
